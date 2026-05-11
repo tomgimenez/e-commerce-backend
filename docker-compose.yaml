@@ -4,12 +4,13 @@ version: '3'
 services:
   db:
     image: postgres:14.3
+    container_name: lore-vault-database
     restart: always
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
       POSTGRES_DB: ${DB_NAME}
-    container_name: teslodb-react
     volumes:
       - ./postgres:/var/lib/postgresql/data
