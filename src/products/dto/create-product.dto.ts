@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsIn, IsInt, IsNumber, IsOptional, 
-         IsPositive, IsString, MinLength 
+import { IsArray, IsBoolean, IsInt, IsNotEmpty, IsNumber, IsObject, IsOptional, 
+         IsPositive, IsString, IsUUID, MinLength 
 } from 'class-validator';
 
 
@@ -40,15 +40,6 @@ export class CreateProductDto {
     @ApiProperty()
     @IsString({ each: true })
     @IsArray()
-    sizes: string[]
-
-    @ApiProperty()
-    @IsIn(['men','women','kid','unisex'])
-    gender: string;
-
-    @ApiProperty()
-    @IsString({ each: true })
-    @IsArray()
     @IsOptional()
     tags: string[];
 
@@ -58,5 +49,26 @@ export class CreateProductDto {
     @IsOptional()
     images?: string[];
 
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    rating?: number;
 
+    @ApiProperty()
+    @IsInt()
+    @IsOptional()
+    reviews?: number;
+
+    @ApiProperty()
+    @IsArray()
+    @IsOptional()
+    categories?: any[];
+
+    @IsUUID()
+    @IsNotEmpty()
+    productTypeId: string;
+
+    @IsObject()
+    @IsNotEmpty()
+    attributes: Record<string, any>;
 }
