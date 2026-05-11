@@ -7,11 +7,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  ArrayContains,
   Between,
   DataSource,
   ILike,
-  In,
   LessThanOrEqual,
   MoreThanOrEqual,
   Repository,
@@ -24,6 +22,8 @@ import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { ProductImage, Product } from './entities';
 import { User } from '../auth/entities/user.entity';
+import { Category } from '../category/entities/category.entity';
+import { ProductTypesService } from 'src/product-types/product-types.service';
 
 @Injectable()
 export class ProductsService {
@@ -36,6 +36,8 @@ export class ProductsService {
     @InjectRepository(ProductImage)
     private readonly productImageRepository: Repository<ProductImage>,
 
+    private readonly productTypeService: ProductTypesService,
+
     private readonly dataSource: DataSource,
   ) {}
 
@@ -43,8 +45,20 @@ export class ProductsService {
     try {
       const { images = [], ...productDetails } = createProductDto;
 
+      const productType = await this.productTypeService.findOne(productDetails.productTypeId);
+
+      if (!productType) {
+        throw new NotFoundException('Product type not found');
+      }
+
+      this.validateAttributes(
+        productType.schema,
+        productDetails.attributes,
+      );
+
       const product = this.productRepository.create({
         ...productDetails,
+        productType: productType,
         images: images.map((image) =>
           this.productImageRepository.create({ url: image }),
         ),
@@ -91,18 +105,14 @@ export class ProductsService {
         id: 'ASC',
       },
       where: {
-        gender: gender ? gender : undefined,
         price: priceWhere,
-        sizes: sizesArray ? ArrayContains(sizesArray) : undefined,
         title: query ? ILike(`%${query}%`) : undefined,
       },
     });
 
     const totalProducts = await this.productRepository.count({
       where: {
-        gender: gender ? gender : undefined,
         price: priceWhere,
-        sizes: sizesArray ? ArrayContains(sizesArray) : undefined,
         title: query ? ILike(`%${query}%`) : undefined,
       },
     });
@@ -208,4 +218,37 @@ export class ProductsService {
       this.handleDBExceptions(error);
     }
   }
+
+  private validateAttributes(
+  schema: Record<string, any>,
+  attributes: Record<string, any>,
+) {
+
+  for (const key in schema) {
+
+    const rule = schema[key];
+    const value = attributes[key];
+
+    // required
+    if (rule.required && value === undefined) {
+      throw new BadRequestException(
+        `Attribute '${key}' is required`,
+      );
+    }
+
+    // si no vino y no es required
+    if (value === undefined) {
+      continue;
+    }
+
+    // type validation
+    const valueType = typeof value;
+
+    if (valueType !== rule.type) {
+      throw new BadRequestException(
+        `Attribute '${key}' must be of type ${rule.type}`,
+      );
+    }
+  }
+}
 }
