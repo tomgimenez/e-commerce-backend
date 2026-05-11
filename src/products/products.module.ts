@@ -7,6 +7,7 @@ import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 
 import { Product, ProductImage } from './entities';
+import { ProductTypesModule } from 'src/product-types/product-types.module';
 
 @Module({
   controllers: [ProductsController],
@@ -14,6 +15,7 @@ import { Product, ProductImage } from './entities';
   imports: [
     TypeOrmModule.forFeature([ Product, ProductImage ]),
     AuthModule,
+    ProductTypesModule
   ],
   exports: [
     ProductsService,
