@@ -1,8 +1,24 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    TableInheritance,
+    UpdateDateColumn
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { ProductImage } from './';
 import { User } from '../../auth/entities/user.entity';
+import { Category } from '../../category/entities/category.entity';
+import { ProductType } from 'src/product-types/entities/product-types.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -16,7 +32,7 @@ export class Product {
     id: string;
 
     @ApiProperty({
-        example: 'T-Shirt Teslo',
+        example: 'The Fellowship of the Ring',
         description: 'Product Title',
         uniqueItems: true
     })
@@ -66,22 +82,9 @@ export class Product {
     stock: number;
 
     @ApiProperty({
-        example: ['M','XL','XXL'],
-        description: 'Product sizes',
+        example: 'lotr',
+        description: 'Product tags'
     })
-    @Column('text',{
-        array: true
-    })
-    sizes: string[];
-
-    @ApiProperty({
-        example: 'women',
-        description: 'Product gender',
-    })
-    @Column('text')
-    gender: string;
-
-    @ApiProperty()
     @Column('text', {
         array: true,
         default: []
@@ -105,6 +108,59 @@ export class Product {
     )
     user: User
 
+    @ApiProperty({
+        example: 4.5,
+        description: 'Product rating',
+        required: false,
+    })
+    @Column('float', {
+        nullable: true,
+        default: null
+    })
+    rating?: number;
+
+    @ApiProperty({
+        example: 150,
+        description: 'Number of reviews',
+        required: false,
+    })
+    @Column('int', {
+        nullable: true,
+        default: null
+    })
+    reviews?: number;
+
+    @ApiProperty({
+        example: [{ id: '1', name: 'Electronics' }],
+        description: 'Product categories',
+        required: false,
+    })
+    @ManyToMany(
+        () => Category,
+        { eager: true }
+    )
+    @JoinTable()
+    categories?: Category[];
+
+    @Column('boolean', {
+        default: true
+    })
+    isActive: boolean;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
+
+    @ManyToOne(() => ProductType, { eager: true })
+    productType: ProductType;
+
+    @Column({ type: 'jsonb', nullable: true })
+    attributes: Record<string, any>;
 
     @BeforeInsert()
     checkSlugInsert() {
@@ -127,6 +183,4 @@ export class Product {
             .replaceAll(' ','_')
             .replaceAll("'",'')
     }
-
-
 }
