@@ -77,14 +77,10 @@ export class ProductsService {
     const {
       limit = 10,
       offset = 0,
-      gender = '',
       minPrice,
       maxPrice,
-      sizes,
       q: query,
     } = paginationDto;
-
-    const sizesArray = sizes ? sizes.toUpperCase().split(',') : undefined;
 
     const priceWhere =
       minPrice !== undefined && maxPrice !== undefined
