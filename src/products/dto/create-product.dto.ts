@@ -71,4 +71,7 @@ export class CreateProductDto {
     @IsObject()
     @IsNotEmpty()
     attributes: Record<string, any>;
+
+    @IsBoolean()
+    isActive: boolean;
 }
