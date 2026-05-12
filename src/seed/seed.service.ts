@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Repository, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsService } from './../products/products.service';
-import { initialData } from './data/seed-data';
+import { initialData, SeedCategory } from './data/seed-data';
 import { User } from '../auth/entities/user.entity';
 import { CategoryService } from 'src/category/category.service';
 import { Product } from 'src/products/entities/product.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { ProductTypesService } from 'src/product-types/product-types.service';
+import { Role } from 'src/auth/entities/role.entity';
+import { ValidRoles } from 'src/auth/interfaces';
 
 
 @Injectable()
@@ -19,6 +21,9 @@ export class SeedService {
     private readonly productsService: ProductsService,
     private readonly categoryService: CategoryService,
     private readonly productTypesService: ProductTypesService,
+
+    @InjectRepository( Role )
+    private readonly rolesRepository: Repository<Role>,
 
     @InjectRepository( User )
     private readonly userRepository: Repository<User>,
@@ -33,6 +38,8 @@ export class SeedService {
   async runSeed() {
 
     await this.deleteTables();
+
+    await this.insertRoles();
     const adminUser = await this.insertUsers();
 
     await this.insertCategories();
@@ -52,8 +59,18 @@ export class SeedService {
     await queryBuilder
       .delete()
       .where({})
-      .execute()
+      .execute();
 
+    await this.rolesRepository.createQueryBuilder()
+      .delete().from(Role).execute();
+      
+  }
+
+  private async insertRoles() {
+    const roles = Object.values(ValidRoles).map((name) =>
+      this.rolesRepository.create({ name })
+    );
+    return this.rolesRepository.save(roles);
   }
 
   private async insertUsers() {
@@ -62,32 +79,60 @@ export class SeedService {
     
     const users: User[] = [];
 
-    seedUsers.forEach( user => {
-      users.push( this.userRepository.create( user ) )
+    // Traer todos los roles ya insertados
+    const rolesMap = new Map<ValidRoles, Role>();
+    const dbRoles = await this.rolesRepository.find();
+    dbRoles.forEach((role) => rolesMap.set(role.name, role));
+
+    seedUsers.forEach( ({roles ,...user}) => {
+      const userRoles = roles
+        .map((name) => rolesMap.get(name as ValidRoles))
+        .filter((role): role is Role => !!role);
+
+      users.push( this.userRepository.create( {...user, roles: userRoles} ) )
     });
 
-    const dbUsers = await this.userRepository.save( seedUsers )
+    const dbUsers = await this.userRepository.save( users )
 
     return dbUsers[0];
   }
 
-  private async insertCategories() {
-    const seedCategories = initialData.categories;
 
-    const insertPromises = [];
+  private async insertCategories(): Promise<void> {
+    const { categories } = initialData;
 
-    seedCategories.forEach(cat => {
-      insertPromises.push(this.categoryService.create(cat));
+    for (const categoryData of categories) {
+      await this.saveCategoryRecursive(categoryData, null);
+    }
+  }
+
+  private async saveCategoryRecursive(
+    data: SeedCategory,
+    parent: Category | null,
+  ): Promise<Category> {
+
+    // 1. Guardar el padre primero
+    const category = this.categoryRepository.create({
+      name:   data.name,
+      parent, // null si es raíz
     });
 
-    await Promise.all(insertPromises);
+    const saved = await this.categoryRepository.save(category);
+
+    // 2. Guardar cada hijo pasándole el padre recién creado
+    if (data.children?.length) {
+      for (const child of data.children) {
+        await this.saveCategoryRecursive(child, saved);
+      }
+    }
+
+    return saved;
   }
 
   private async insertBookType() {
     const seedBookType = initialData.productType;
 
     const bookType = await this.productTypesService.create(seedBookType);
-    // console.log(bookType)
 
     this.bookType = bookType.id;
   }
@@ -112,7 +157,6 @@ export class SeedService {
   private async createProductWithCategories( productData: any, user: User ) {
     try {
 
-      console.log(productData)
       // Separate categories from product data
       const { categories: seedCategories, ...productDetails } = productData;
       

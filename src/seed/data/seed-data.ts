@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import { ValidRoles } from 'src/auth/interfaces';
 
 interface SeedProduct {
     description: string;
@@ -13,10 +14,6 @@ interface SeedProduct {
     // productType?: SeedProductType;
     attributes: Record<string, any>;
     categories?: SeedCategory[];
-}
-
-interface SeedCategory {
-    name: string;
 }
 
 interface SeedUser {
@@ -39,20 +36,48 @@ interface SeedData {
     products: SeedProduct[];
 }
 
+export interface SeedCategory {
+  name: string;
+  children?: SeedCategory[];
+}
+
 const seedCategories: SeedCategory[] = [
-    { name: "High Fantasy" },
-    { name: "Low Fantasy" },
-    { name: "Historical Fantasy" },
-    { name: "Grimdark" },
-    { name: "Epic Fantasy" },
-    { name: "Urban Fantasy" },
-    { name: "Heroic Fantasy" },
-    { name: "Magical Realism" },
-    { name: "Portal Fantasy" },
-    { name: "Romantic Fantasy" },
-    { name: "LitRPG" },
-    { name: "Gaslamp Fantasy" },
-    { name: "Wuxia / Xianxia" }
+  {
+    name: 'Fantasy',
+    children: [
+      {
+        name: 'High Fantasy',
+        children: [
+          { name: 'Epic Fantasy' },
+          { name: 'Heroic Fantasy' },
+        ],
+      },
+      {
+        name: 'Low Fantasy',
+        children: [
+          { name: 'Grimdark' },
+          { name: 'Historical Fantasy' },
+          { name: 'Magical Realism' },
+        ],
+      },
+      {
+        name: 'Contemporary Fantasy',
+        children: [
+          { name: 'Urban Fantasy' },
+          { name: 'Portal Fantasy' },
+          { name: 'Gaslamp Fantasy' },
+        ],
+      },
+      {
+        name: 'Genre Blends',
+        children: [
+          { name: 'Romantic Fantasy' },
+          { name: 'LitRPG' },
+          { name: 'Wuxia / Xianxia' },
+        ],
+      },
+    ],
+  },
 ];
 
 
@@ -60,16 +85,16 @@ export const initialData: SeedData = {
 
     users: [
         {
-            email: 'test1@google.com',
-            fullName: 'Test One',
+            email: 'admin@google.com',
+            fullName: 'Admin User',
             password: bcrypt.hashSync( 'Abc123', 10 ),
-            roles: ['admin']
+            roles: [ValidRoles.admin]
         },
         {
-            email: 'test2@google.com',
-            fullName: 'Test Two',
+            email: 'user@google.com',
+            fullName: 'Shop User',
             password: bcrypt.hashSync( 'Abc123', 10 ),
-            roles: ['user','super']
+            roles: [ValidRoles.user, ValidRoles.superUser]
         }
     ],
 
@@ -82,15 +107,23 @@ export const initialData: SeedData = {
             author: {
                 type: 'string',
                 required: true,
+                label: 'Author'
             },
             publisher: {
                 type: 'string',
-                required: false
+                required: false,
+                label: 'Publisher'
             },
             isBestseller: {
                 type: 'boolean',
                 required: false,
+                label: 'Bestseller'
             },
+            pages: {
+                type: 'string',
+                required: false,
+                label: 'Pages'
+            }
         },
     },
 
