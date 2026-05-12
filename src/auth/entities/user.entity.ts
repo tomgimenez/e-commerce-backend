@@ -1,5 +1,7 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from '../../products/entities';
+import { Role } from './role.entity';
+import { ValidRoles } from '../interfaces';
 
 
 @Entity('users')
@@ -26,11 +28,13 @@ export class User {
     })
     isActive: boolean;
 
-    @Column('text', {
-        array: true,
-        default: ['user']
+    @ManyToMany(() => Role, (role) => role.users, { eager: true })
+    @JoinTable({
+        name: 'user_roles',
+        joinColumn:        { name: 'user_id',  referencedColumnName: 'id' },
+        inverseJoinColumn: { name: 'role_id',  referencedColumnName: 'id' },
     })
-    roles: string[];
+    roles: Role[];
 
     @OneToMany(
         () => Product,
@@ -48,5 +52,9 @@ export class User {
     checkFieldsBeforeUpdate() {
         this.checkFieldsBeforeInsert();   
     }
+
+    get roleNames(): ValidRoles[] {
+        return this.roles?.map((r) => r.name) ?? [];
+  }
 
 }

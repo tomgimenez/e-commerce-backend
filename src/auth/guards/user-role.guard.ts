@@ -3,6 +3,7 @@ import { CanActivate, ExecutionContext, Injectable, BadRequestException, Forbidd
 import { Observable } from 'rxjs';
 import { User } from '../entities/user.entity';
 import { META_ROLES } from '../decorators/role-protected.decorator';
+import { ValidRoles } from '../interfaces';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
@@ -15,7 +16,7 @@ export class UserRoleGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     
-    const validRoles: string[] = this.reflector.get( META_ROLES , context.getHandler() )
+    const validRoles: ValidRoles[] = this.reflector.get<ValidRoles[]>( META_ROLES , context.getHandler() )
 
     if ( !validRoles ) return true;
     if ( validRoles.length === 0 ) return true;
@@ -25,15 +26,14 @@ export class UserRoleGuard implements CanActivate {
 
     if ( !user ) 
       throw new BadRequestException('User not found');
-    
-    for (const role of user.roles ) {
-      if ( validRoles.includes( role ) ) {
-        return true;
-      }
-    }
-    
-    throw new ForbiddenException(
-      `User ${ user.fullName } need a valid role: [${ validRoles }]`
-    );
+
+    const hasRole = validRoles.some((role) => user.roleNames.includes(role));
+
+    if (!hasRole)
+      throw new ForbiddenException(
+        `User ${ user.fullName } need a valid role: [${ validRoles }]`
+      );
+
+      return true;
   }
 }
