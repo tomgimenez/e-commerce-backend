@@ -7,11 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  Between,
   DataSource,
-  ILike,
-  LessThanOrEqual,
-  MoreThanOrEqual,
   Repository,
 } from 'typeorm';
 
@@ -82,36 +78,60 @@ export class ProductsService {
       q: query,
     } = paginationDto;
 
-    const priceWhere =
-      minPrice !== undefined && maxPrice !== undefined
-        ? Between(minPrice, maxPrice)
-        : minPrice !== undefined
-        ? MoreThanOrEqual(minPrice)
-        : maxPrice !== undefined
-        ? LessThanOrEqual(maxPrice)
-        : undefined;
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
 
-    const products = await this.productRepository.find({
-      take: limit,
-      skip: offset,
-      relations: {
-        images: true,
-      },
-      order: {
-        id: 'ASC',
-      },
-      where: {
-        price: priceWhere,
-        title: query ? ILike(`%${query}%`) : undefined,
-      },
-    });
+    // Apply price filter
+    if (minPrice !== undefined && maxPrice !== undefined) {
+      queryBuilder.andWhere('product.price BETWEEN :minPrice AND :maxPrice', {
+        minPrice,
+        maxPrice,
+      });
+    } else if (minPrice !== undefined) {
+      queryBuilder.andWhere('product.price >= :minPrice', { minPrice });
+    } else if (maxPrice !== undefined) {
+      queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
+    }
 
-    const totalProducts = await this.productRepository.count({
-      where: {
-        price: priceWhere,
-        title: query ? ILike(`%${query}%`) : undefined,
-      },
-    });
+    // Apply search query on title and attributes
+    if (query) {
+      queryBuilder.andWhere(
+        `(product.title ILIKE :query OR product.attributes::text ILIKE :query)`,
+        { query: `%${query}%` },
+      );
+    }
+
+    // Apply relations and ordering
+    queryBuilder
+      .leftJoinAndSelect('product.images', 'productImages')
+      .leftJoinAndSelect('product.categories', 'categories')
+      .orderBy('product.id', 'ASC')
+      .take(limit)
+      .skip(offset);
+
+    const products = await queryBuilder.getMany();
+
+    // Get total count for pagination
+    const countQueryBuilder = this.productRepository.createQueryBuilder('product');
+
+    if (minPrice !== undefined && maxPrice !== undefined) {
+      countQueryBuilder.andWhere('product.price BETWEEN :minPrice AND :maxPrice', {
+        minPrice,
+        maxPrice,
+      });
+    } else if (minPrice !== undefined) {
+      countQueryBuilder.andWhere('product.price >= :minPrice', { minPrice });
+    } else if (maxPrice !== undefined) {
+      countQueryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
+    }
+
+    if (query) {
+      countQueryBuilder.andWhere(
+        `(product.title ILIKE :query OR product.attributes::text ILIKE :query)`,
+        { query: `%${query}%` },
+      );
+    }
+
+    const totalProducts = await countQueryBuilder.getCount();
 
     return {
       count: totalProducts,
