@@ -24,6 +24,10 @@ export class ProductTypesService {
     }
   }
 
+  async findAll() {
+    return await this.productTypeRepository.find();
+  }
+
   async findOne(id: string) {
     let productType: ProductType;
     
