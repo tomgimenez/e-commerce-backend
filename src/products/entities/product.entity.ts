@@ -19,6 +19,7 @@ import { ProductImage } from './';
 import { User } from '../../auth/entities/user.entity';
 import { Category } from '../../category/entities/category.entity';
 import { ProductType } from 'src/product-types/entities/product-types.entity';
+import { slugify } from 'src/common/utils/slugify.util';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -163,24 +164,10 @@ export class Product {
     attributes: Record<string, any>;
 
     @BeforeInsert()
-    checkSlugInsert() {
-
-        if ( !this.slug ) {
-            this.slug = this.title;
-        }
-
-        this.slug = this.slug
-            .toLowerCase()
-            .replaceAll(' ','_')
-            .replaceAll("'",'')
-
-    }
-
     @BeforeUpdate()
-    checkSlugUpdate() {
-        this.slug = this.slug
-            .toLowerCase()
-            .replaceAll(' ','_')
-            .replaceAll("'",'')
+    generateSlug() {
+      if (!this.slug && this.title) {
+        this.slug = slugify(this.title);
+      }
     }
 }
