@@ -135,7 +135,7 @@ export const initialData: SeedData = {
                 "fellowship-of-the-ring.jpg"
             ],
             "stock": 120,
-            "price": 120.00,
+            "price": 12.00,
             "slug": "the-fellowship-of-the-ring",
             "tags": ["High Fantasy", "Epic Fantasy", "Classic"],
             "rating": 4.9,
@@ -178,7 +178,7 @@ export const initialData: SeedData = {
                 "the-hobbit.jpg"
             ],
             "stock": 85,
-            "price": 75.50,
+            "price": 9.50,
             "slug": "the-hobbit",
             "tags": ["High Fantasy", "Adventure", "Classic"],
             "rating": 4.8,
@@ -262,7 +262,7 @@ export const initialData: SeedData = {
                 "a-court-of-thrones-and-roses.jpg",
             ],
             "stock": 150,
-            "price": 210.00,
+            "price": 8.99,
             "slug": "a-court-of-thorns-and-roses",
             "tags": ["Romantic Fantasy", "Fae", "Romance"],
             "rating": 4.7,
