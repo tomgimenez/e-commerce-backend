@@ -104,6 +104,7 @@ export class ProductsService {
     queryBuilder
       .leftJoinAndSelect('product.images', 'productImages')
       .leftJoinAndSelect('product.categories', 'categories')
+      .leftJoinAndSelect('product.productType', 'productType')
       .orderBy('product.id', 'ASC')
       .take(limit)
       .skip(offset);
