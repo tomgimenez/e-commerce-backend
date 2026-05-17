@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { ProductType } from './entities/product-types.entity';
 import { CreateProductTypeDto } from './dto/create-product-type.dto';
@@ -23,5 +23,10 @@ export class ProductTypesController {
   @ApiResponse({ status: 403, description: 'Forbidden. Token related.' })
   create(@Body() createProductTypeDto: CreateProductTypeDto/* , @GetUser() user: User */) {
     return this.productTypesService.create(createProductTypeDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.productTypesService.findAll();
   }
 }
