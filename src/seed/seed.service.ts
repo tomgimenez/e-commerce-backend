@@ -10,7 +10,8 @@ import { Category } from 'src/category/entities/category.entity';
 import { ProductTypesService } from 'src/product-types/product-types.service';
 import { Role } from 'src/auth/entities/role.entity';
 import { ValidRoles } from 'src/auth/interfaces';
-
+import { S3Service } from 'src/s3/s3.service';
+import { join } from 'path';
 
 @Injectable()
 export class SeedService {
@@ -21,6 +22,7 @@ export class SeedService {
     private readonly productsService: ProductsService,
     private readonly categoryService: CategoryService,
     private readonly productTypesService: ProductTypesService,
+    private readonly s3Service: S3Service,
 
     @InjectRepository( Role )
     private readonly rolesRepository: Repository<Role>,
@@ -38,6 +40,7 @@ export class SeedService {
   async runSeed() {
 
     await this.deleteTables();
+    await this.s3Service.emptyBucket();
 
     await this.insertRoles();
     const adminUser = await this.insertUsers();
@@ -157,11 +160,23 @@ export class SeedService {
   private async createProductWithCategories( productData: any, user: User ) {
     try {
 
-      // Separate categories from product data
-      const { categories: seedCategories, ...productDetails } = productData;
+      const { categories: seedCategories, images, ...productDetails } = productData;
+      let imagesFromS3 = [];
+
+      // Save product images in AWS S3 bucket
+      for (const image of images) {
+        const imagePath = join(process.cwd(), 'static', 'seed', image);
+        const imageName = await this.s3Service.uploadFromPath(imagePath);
+        imagesFromS3.push(imageName);
+      }
+
+      const productResult = {
+        ...productDetails,
+        images: imagesFromS3
+      }
       
       // Create product without categories
-      const createdProduct = await this.productsService.create( productDetails, user );
+      const createdProduct = await this.productsService.create( productResult, user );
       
       // If there are categories in the seed data, associate them
       if (seedCategories && seedCategories.length > 0) {

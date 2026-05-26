@@ -11,6 +11,7 @@ import { Product } from 'src/products/entities/product.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { ProductTypesModule } from 'src/product-types/product-types.module';
 import { Role } from 'src/auth/entities/role.entity';
+import { S3Module } from 'src/s3/s3.module';
 
 @Module({
   controllers: [SeedController],
@@ -20,7 +21,8 @@ import { Role } from 'src/auth/entities/role.entity';
     ProductsModule,
     AuthModule,
     CategoryModule,
-    ProductTypesModule
+    ProductTypesModule,
+    S3Module
   ]
 })
 export class SeedModule {}
