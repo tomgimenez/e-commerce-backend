@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { MessagesWsModule } from './messages-ws/messages-ws.module';
 import { CategoryModule } from './category/category.module';
 import { ProductTypesModule } from './product-types/product-types.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -54,6 +55,8 @@ import { ProductTypesModule } from './product-types/product-types.module';
     CategoryModule,
 
     ProductTypesModule,
+
+    S3Module,
 
   ],
 })
