@@ -1,6 +1,7 @@
+import { S3Service } from 'src/s3/s3.service';
 import { Product } from './';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Transform } from 'class-transformer';
 
 @Entity({ name: 'product_images' })
 export class ProductImage {
@@ -9,6 +10,7 @@ export class ProductImage {
     id: number;
 
     @Column('text')
+    @Transform(({value}) => S3Service.buildUrl(value))
     url: string;
 
     @ManyToOne(
