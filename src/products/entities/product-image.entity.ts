@@ -10,7 +10,6 @@ export class ProductImage {
     id: number;
 
     @Column('text')
-    @Transform(({value}) => S3Service.buildUrl(value))
     url: string;
 
     @ManyToOne(
