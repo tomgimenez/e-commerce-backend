@@ -27,8 +27,8 @@ export class S3Service {
   async uploadBuffer(
     buffer: Buffer,
     originalName: string,
-    folder: 'products'
-  ): Promise<string> {
+    folder = 'products'
+  ): Promise<object> {
     const ext = extname(originalName);
     const key = `${folder}/${uuid()}${ext}`;
 
@@ -43,7 +43,11 @@ export class S3Service {
     });
 
     await upload.done();
-    return key;
+    
+    return {
+      fileName: key,
+      secureUrl: this.buildUrl(key)
+    };
   }
 
   // Upload a file from local filesystem (seed)
@@ -110,9 +114,8 @@ export class S3Service {
   } while (continuationToken); // si hay más de 1000 objetos, sigue paginando
 }
 
-  static buildUrl(key: string): string {
-    // return `https://${this.bucket}.s3.${this.configService.get('AWS_REGION')}.amazonaws.com/${key}`;
-    return `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+  buildUrl(key: string): string {
+    return `https://${this.bucket}.s3.${this.configService.get('AWS_REGION')}.amazonaws.com/${key}`;
   }
 
   private extractKeyFromUrl(url: string): string {
