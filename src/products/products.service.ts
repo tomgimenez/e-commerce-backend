@@ -20,6 +20,7 @@ import { ProductImage, Product } from './entities';
 import { User } from '../auth/entities/user.entity';
 import { Category } from '../category/entities/category.entity';
 import { ProductTypesService } from 'src/product-types/product-types.service';
+import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
 export class ProductsService {
@@ -33,6 +34,7 @@ export class ProductsService {
     private readonly productImageRepository: Repository<ProductImage>,
 
     private readonly productTypeService: ProductTypesService,
+    private readonly s3Service: S3Service,
 
     private readonly dataSource: DataSource,
   ) {}
@@ -139,7 +141,9 @@ export class ProductsService {
       pages: Math.ceil(totalProducts / limit),
       products: products.map((product) => ({
         ...product,
-        images: product.images.map((img) => img.url),
+        images: product.images.map(
+          (img) => ({...img, key: img.url, url: this.s3Service.buildUrl(img.url)})
+        ),
       })),
     };
   }
@@ -166,7 +170,14 @@ export class ProductsService {
   }
 
   async findOnePlain(term: string) {
-    return await this.findOne(term);
+    const {images = [], ...product} = await this.findOne(term);
+    
+    return {
+      ...product,
+      images: images.map(
+        img => ({...img, key: img.url, url: this.s3Service.buildUrl(img.url)})
+      )
+    }
   }
 
   async update(id: string, updateProductDto: UpdateProductDto, user: User) {
@@ -216,7 +227,7 @@ export class ProductsService {
     if (error.code === '23505') throw new BadRequestException(error.detail);
 
     this.logger.error(error);
-    
+
     throw new InternalServerErrorException(
       'Unexpected error, check server logs',
     );
