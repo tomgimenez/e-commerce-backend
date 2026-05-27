@@ -195,6 +195,19 @@ export class ProductsService {
 
     try {
       if (images) {
+
+        const currentImages = await this.productImageRepository.find({
+          where: { product: { id } }
+        });
+
+        const imagesToDelete = currentImages.filter(
+          img => !images.includes(img.url)
+        );
+
+        await Promise.all(
+          imagesToDelete.map(img => this.s3Service.deleteByKey(img.url))
+        );
+
         await queryRunner.manager.delete(ProductImage, { product: { id } });
 
         product.images = images.map((image) =>
@@ -202,7 +215,6 @@ export class ProductsService {
         );
       }
 
-      // await this.productRepository.save( product );
       product.user = user;
 
       await queryRunner.manager.save(product);
@@ -211,10 +223,13 @@ export class ProductsService {
       await queryRunner.release();
 
       return this.findOnePlain(id);
+      
     } catch (error) {
+
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
       this.handleDBExceptions(error);
+
     }
   }
 

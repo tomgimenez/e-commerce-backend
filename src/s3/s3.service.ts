@@ -73,10 +73,9 @@ export class S3Service {
     return key;
   }
 
-  async deleteByUrl(url: string): Promise<void> {
-    const key = this.extractKeyFromUrl(url);
+  async deleteByKey(key: string): Promise<void> {
     await this.client.send(
-      new DeleteObjectCommand({ Bucket: this.bucket, Key: key }),
+      new DeleteObjectCommand({ Bucket: this.bucket, Key: key })
     );
   }
 
