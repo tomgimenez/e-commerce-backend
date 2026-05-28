@@ -5,15 +5,16 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
-import { ProductsModule } from './products/products.module';
+import { ProductModule } from './product/product.module';
 import { CommonModule } from './common/common.module';
 import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { MessagesWsModule } from './messages-ws/messages-ws.module';
 import { CategoryModule } from './category/category.module';
-import { ProductTypesModule } from './product-types/product-types.module';
+import { ProductTypesModule } from './product-type/product-type.module';
 import { S3Module } from './s3/s3.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { S3Module } from './s3/s3.module';
       rootPath: join(__dirname,'..','public'), 
     }),
 
-    ProductsModule,
+    ProductModule,
 
     CommonModule,
 
@@ -57,6 +58,8 @@ import { S3Module } from './s3/s3.module';
     ProductTypesModule,
 
     S3Module,
+
+    UserModule,
 
   ],
 })
