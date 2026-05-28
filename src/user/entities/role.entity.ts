@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from '../../auth/entities/user.entity';
-import { ValidRoles } from '../interfaces';
+import { ValidRoles } from '../enums/valid-roles';
+import { User } from './user.entity';
 
 @Entity('roles')
 export class Role {

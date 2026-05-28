@@ -1,7 +1,7 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Product } from '../../products/entities';
+import { Product } from '../../product/entities';
 import { Role } from './role.entity';
-import { ValidRoles } from '../interfaces';
+import { ValidRoles } from '../enums/valid-roles';
 
 
 @Entity('users')
