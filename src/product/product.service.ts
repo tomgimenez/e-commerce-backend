@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -10,17 +11,17 @@ import {
   DataSource,
   Repository,
 } from 'typeorm';
+import { validate as isUUID } from 'uuid';
 
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 
-import { validate as isUUID } from 'uuid';
 import { ProductImage, Product } from './entities';
 import { User } from '../user/entities/user.entity';
 import { Category } from '../category/entities/category.entity';
-import { ProductTypeService } from 'src/product-type/product-type.service';
-import { S3Service } from 'src/s3/s3.service';
+import { ProductTypeService } from '../product-type/product-type.service';
+import { S3Service } from '../s3/s3.service';
 
 @Injectable()
 export class ProductService {
@@ -44,10 +45,6 @@ export class ProductService {
       const { images = [], ...productDetails } = createProductDto;
 
       const productType = await this.productTypeService.findOne(productDetails.productTypeId);
-
-      if (!productType) {
-        throw new NotFoundException('Product type not found');
-      }
 
       this.validateAttributes(
         productType.schema,
@@ -238,24 +235,22 @@ export class ProductService {
     await this.productRepository.remove(product);
   }
 
-  private handleDBExceptions(error: any) {
-    if (error.code === '23505') throw new BadRequestException(error.detail);
-
-    this.logger.error(error);
-
-    throw new InternalServerErrorException(
-      'Unexpected error, check server logs',
-    );
-  }
-
   async deleteAllProducts() {
     const query = this.productRepository.createQueryBuilder('product');
-
+    
     try {
       return await query.delete().where({}).execute();
     } catch (error) {
       this.handleDBExceptions(error);
     }
+  }
+  
+  private handleDBExceptions(error: any) {
+    if (error instanceof HttpException) throw error;
+    
+    this.logger.error(error);
+
+    throw error;
   }
 
   private validateAttributes(
