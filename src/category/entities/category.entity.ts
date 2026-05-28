@@ -1,6 +1,7 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "../../product/entities/product.entity";
 import { slugify } from "../../common/utils/slugify.util";
+import { ProductType } from "src/product-type/entities/product-types.entity";
 
 @Entity({ name: 'category' })
 export class Category {
@@ -40,6 +41,11 @@ export class Category {
     }
   )
   children: Category[];
+
+  @ManyToOne(
+    () => ProductType
+  )
+  productType: ProductType
 
   @BeforeInsert()
   @BeforeUpdate()
