@@ -6,7 +6,7 @@ import { CreateProductTypeDto } from './dto/create-product-type.dto';
 import { isUUID } from 'class-validator';
 
 @Injectable()
-export class ProductTypesService {
+export class ProductTypeService {
 
   constructor(
     @InjectRepository(ProductType)
