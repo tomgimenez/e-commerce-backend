@@ -1,14 +1,15 @@
 import * as bcrypt from 'bcrypt';
 import { ValidRoles } from '../../user/enums/valid-roles';
 import { productsData } from './products-data';
+import { ProductType } from 'src/product-type/entities/product-types.entity';
 
 interface SeedProduct {
+	title: string;
 	description: string;
-	images: string[];
 	stock: number;
 	price: number;
+	images: string[];
 	tags: string[];
-	title: string;
 	rating: number;
 	reviews: number;
 	attributes: Record<string, any>;
@@ -38,6 +39,7 @@ interface SeedData {
 export interface SeedCategory {
   name: string;
   children?: SeedCategory[];
+	productType?: ProductType;
 }
 
 const seedCategories: SeedCategory[] = [

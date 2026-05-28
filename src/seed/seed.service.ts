@@ -12,11 +12,12 @@ import { Role } from 'src/user/entities/role.entity';
 import { ValidRoles } from '../user/enums/valid-roles';
 import { S3Service } from 'src/s3/s3.service';
 import { join } from 'path';
+import { ProductType } from 'src/product-type/entities/product-types.entity';
 
 @Injectable()
 export class SeedService {
 
-  private bookType: string;
+  private bookType: ProductType;
 
   constructor(
     private readonly productService: ProductService,
@@ -45,8 +46,8 @@ export class SeedService {
     await this.insertRoles();
     const adminUser = await this.insertUsers();
 
-    await this.insertCategories();
     await this.insertBookType();
+    await this.insertCategories();
     await this.insertNewProducts( adminUser );
 
     return 'SEED EXECUTED';
@@ -118,6 +119,7 @@ export class SeedService {
     const category = this.categoryRepository.create({
       name:   data.name,
       parent, // null si es raíz
+      productType: this.bookType
     });
 
     const saved = await this.categoryRepository.save(category);
@@ -135,9 +137,7 @@ export class SeedService {
   private async insertBookType() {
     const seedBookType = initialData.productType;
 
-    const bookType = await this.productTypeService.create(seedBookType);
-
-    this.bookType = bookType.id;
+    this.bookType = await this.productTypeService.create(seedBookType);
   }
 
 
@@ -149,7 +149,7 @@ export class SeedService {
     const insertPromises = [];
 
     products.forEach( product => {
-      insertPromises.push( this.createProductWithCategories( {productTypeId: this.bookType, ...product}, user ) );
+      insertPromises.push( this.createProductWithCategories( {productType: this.bookType, ...product}, user ) );
     });
 
     await Promise.all( insertPromises );
