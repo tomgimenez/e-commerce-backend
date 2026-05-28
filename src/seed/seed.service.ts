@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Repository, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductsService } from './../products/products.service';
+import { ProductService } from '../product/product.service';
 import { initialData, SeedCategory } from './data/seed-data';
-import { User } from '../auth/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { CategoryService } from 'src/category/category.service';
-import { Product } from 'src/products/entities/product.entity';
+import { Product } from 'src/product/entities/product.entity';
 import { Category } from 'src/category/entities/category.entity';
-import { ProductTypesService } from 'src/product-types/product-types.service';
-import { Role } from 'src/auth/entities/role.entity';
-import { ValidRoles } from 'src/auth/interfaces';
+import { ProductTypeService } from 'src/product-type/product-type.service';
+import { Role } from 'src/user/entities/role.entity';
+import { ValidRoles } from '../user/enums/valid-roles';
 import { S3Service } from 'src/s3/s3.service';
 import { join } from 'path';
 
@@ -19,9 +19,9 @@ export class SeedService {
   private bookType: string;
 
   constructor(
-    private readonly productsService: ProductsService,
+    private readonly productService: ProductService,
     private readonly categoryService: CategoryService,
-    private readonly productTypesService: ProductTypesService,
+    private readonly productTypeService: ProductTypeService,
     private readonly s3Service: S3Service,
 
     @InjectRepository( Role )
@@ -54,8 +54,8 @@ export class SeedService {
 
   private async deleteTables() {
 
-    await this.productsService.deleteAllProducts();
-    await this.productTypesService.deleteAllProductTypes();
+    await this.productService.deleteAllProducts();
+    await this.productTypeService.deleteAllProductTypes();
     await this.categoryService.deleteAllCategories();
 
     const queryBuilder = this.userRepository.createQueryBuilder();
@@ -135,14 +135,14 @@ export class SeedService {
   private async insertBookType() {
     const seedBookType = initialData.productType;
 
-    const bookType = await this.productTypesService.create(seedBookType);
+    const bookType = await this.productTypeService.create(seedBookType);
 
     this.bookType = bookType.id;
   }
 
 
   private async insertNewProducts( user: User ) {
-    await this.productsService.deleteAllProducts();
+    await this.productService.deleteAllProducts();
 
     const products = initialData.products;
 
@@ -176,7 +176,7 @@ export class SeedService {
       }
       
       // Create product without categories
-      const createdProduct = await this.productsService.create( productResult, user );
+      const createdProduct = await this.productService.create( productResult, user );
       
       // If there are categories in the seed data, associate them
       if (seedCategories && seedCategories.length > 0) {

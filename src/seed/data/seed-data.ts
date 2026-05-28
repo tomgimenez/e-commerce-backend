@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { ValidRoles } from 'src/auth/interfaces';
+import { ValidRoles } from '../../user/enums/valid-roles';
 import { productsData } from './products-data';
 
 interface SeedProduct {

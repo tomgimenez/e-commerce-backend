@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ValidRoles } from '../auth/interfaces';
+import { ValidRoles } from '../user/enums/valid-roles';
 import { Auth } from '../auth/decorators';
 
 import { SeedService } from './seed.service';
