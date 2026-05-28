@@ -1,11 +1,10 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { ApiTags } from '@nestjs/swagger';
-import { Auth, GetUser } from 'src/auth/decorators';
+import { Auth } from 'src/auth/decorators';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { User } from 'src/auth/entities/user.entity';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ValidRoles } from 'src/auth/interfaces';
+import { ValidRoles } from '../user/enums/valid-roles';
 
 @ApiTags('Categories')
 @Controller('category')
