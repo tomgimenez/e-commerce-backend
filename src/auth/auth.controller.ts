@@ -5,24 +5,24 @@ import { ApiTags } from '@nestjs/swagger';
 import { IncomingHttpHeaders } from 'http';
 
 import { AuthService } from './auth.service';
-import { RawHeaders, GetUser, Auth } from './decorators';
+import { RawHeaders, Auth } from './decorators';
 import { RoleProtected } from './decorators/role-protected.decorator';
 
-import { CreateUserDto, LoginUserDto } from './dto';
-import { User } from './entities/user.entity';
-import { UserRoleGuard } from './guards/user-role.guard';
-import { ValidRoles } from './interfaces';
+import { UserRoleGuard } from '../user/guards/user-role.guard';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { User } from '../user/entities/user.entity';
+import { ValidRoles } from '../user/enums/valid-roles';
+import { GetUser } from '../user/decorators/get-user.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-
-
   @Post('register')
   createUser(@Body() createUserDto: CreateUserDto ) {
-    return this.authService.create( createUserDto );
+    return this.authService.register( createUserDto );
   }
 
   @Post('login')
@@ -50,7 +50,6 @@ export class AuthController {
     @Headers() headers: IncomingHttpHeaders,
   ) {
 
-
     return {
       ok: true,
       message: 'Hola Mundo Private',
@@ -60,7 +59,6 @@ export class AuthController {
       headers
     }
   }
-
 
   // @SetMetadata('roles', ['admin','super-user'])
 
@@ -77,7 +75,6 @@ export class AuthController {
     }
   }
 
-
   @Get('private3')
   @Auth( ValidRoles.admin )
   privateRoute3(
@@ -89,7 +86,5 @@ export class AuthController {
       user
     }
   }
-
-
 
 }
