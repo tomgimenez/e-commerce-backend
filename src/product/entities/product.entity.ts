@@ -14,11 +14,11 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ProductImage } from './';
-import { User } from '../../auth/entities/user.entity';
+import { ProductImage } from '.';
+import { User } from '../../user/entities/user.entity';
 import { Category } from '../../category/entities/category.entity';
-import { ProductType } from 'src/product-types/entities/product-types.entity';
-import { slugify } from 'src/common/utils/slugify.util';
+import { ProductType } from '../../product-type/entities/product-types.entity';
+import { slugify } from '../../common/utils/slugify.util';
 
 @Entity({ name: 'products' })
 export class Product {

@@ -17,13 +17,13 @@ import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 import { validate as isUUID } from 'uuid';
 import { ProductImage, Product } from './entities';
-import { User } from '../auth/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { Category } from '../category/entities/category.entity';
-import { ProductTypesService } from 'src/product-types/product-types.service';
+import { ProductTypeService } from 'src/product-type/product-type.service';
 import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
-export class ProductsService {
+export class ProductService {
   private readonly logger = new Logger('ProductsService');
 
   constructor(
@@ -33,7 +33,7 @@ export class ProductsService {
     @InjectRepository(ProductImage)
     private readonly productImageRepository: Repository<ProductImage>,
 
-    private readonly productTypeService: ProductTypesService,
+    private readonly productTypeService: ProductTypeService,
     private readonly s3Service: S3Service,
 
     private readonly dataSource: DataSource,

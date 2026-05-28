@@ -1,18 +1,18 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 
-import { AuthModule } from './../auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 
-import { ProductsController } from './products.controller';
-import { ProductsService } from './products.service';
+import { ProductController } from './product.controller';
+import { ProductService } from './product.service';
 
 import { Product, ProductImage } from './entities';
-import { ProductTypesModule } from 'src/product-types/product-types.module';
+import { ProductTypesModule } from 'src/product-type/product-type.module';
 import { S3Module } from 'src/s3/s3.module';
 
 @Module({
-  controllers: [ProductsController],
-  providers: [ProductsService],
+  controllers: [ProductController],
+  providers: [ProductService],
   imports: [
     TypeOrmModule.forFeature([ Product, ProductImage ]),
     AuthModule,
@@ -20,8 +20,8 @@ import { S3Module } from 'src/s3/s3.module';
     S3Module
   ],
   exports: [
-    ProductsService,
+    ProductService,
     TypeOrmModule,
   ]
 })
-export class ProductsModule {}
+export class ProductModule {}

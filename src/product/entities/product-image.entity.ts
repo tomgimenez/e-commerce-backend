@@ -1,5 +1,5 @@
 import { S3Service } from 'src/s3/s3.service';
-import { Product } from './';
+import { Product } from '.';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Transform } from 'class-transformer';
 
