@@ -259,35 +259,35 @@ export class ProductService {
   }
 
   private validateAttributes(
-  schema: Record<string, any>,
-  attributes: Record<string, any>,
-) {
+    schema: Record<string, any>,
+    attributes: Record<string, any>,
+  ) {
 
-  for (const key in schema) {
+    for (const key in schema) {
 
-    const rule = schema[key];
-    const value = attributes[key];
+      const rule = schema[key];
+      const value = attributes[key];
 
-    // required
-    if (rule.required && value === undefined) {
-      throw new BadRequestException(
-        `Attribute '${key}' is required`,
-      );
-    }
+      // required
+      if (rule.required && value === undefined) {
+        throw new BadRequestException(
+          `Attribute '${key}' is required`,
+        );
+      }
 
-    // si no vino y no es required
-    if (value === undefined) {
-      continue;
-    }
+      // si no vino y no es required
+      if (value === undefined) {
+        continue;
+      }
 
-    // type validation
-    const valueType = typeof value;
+      // type validation
+      const valueType = typeof value;
 
-    if (valueType !== rule.type) {
-      throw new BadRequestException(
-        `Attribute '${key}' must be of type ${rule.type}`,
-      );
+      if (valueType !== rule.type) {
+        throw new BadRequestException(
+          `Attribute '${key}' must be of type ${rule.type}`,
+        );
+      }
     }
   }
-}
 }
