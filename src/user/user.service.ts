@@ -33,7 +33,7 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    const user = this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { email },
       select: { email: true, password: true, id: true, fullName: true, isActive: true, roles: true}
     });
@@ -45,7 +45,7 @@ export class UserService {
   }
 
   async findById(id: string): Promise<User> {
-    const user = this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id },
       select: { email: true, password: true, id: true, fullName: true, isActive: true, roles: true}
     });
