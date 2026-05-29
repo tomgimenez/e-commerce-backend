@@ -15,8 +15,8 @@ import { Response } from 'express';
 import { memoryStorage } from 'multer';
 import { FilesService } from './files.service';
 
-import { fileFilter } from './helpers';
-import { S3Service } from 'src/s3/s3.service';
+import { S3Service } from '../s3/s3.service';
+import { fileFilter } from './helpers/file-filter.helper';
 
 @ApiTags('Files - Get and Upload')
 @Controller('files')
