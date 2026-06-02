@@ -75,9 +75,17 @@ export class ProductService {
       minPrice,
       maxPrice,
       q: query,
+      category
     } = paginationDto;
-
+    
     const queryBuilder = this.productRepository.createQueryBuilder('product');
+    const countQueryBuilder = this.productRepository.createQueryBuilder('product');
+
+    // joins necesarios para filtrar por categoria
+    queryBuilder
+      .leftJoinAndSelect('product.images', 'productImages')
+      .leftJoinAndSelect('product.categories', 'categories')
+      .leftJoinAndSelect('product.productType', 'productType');
 
     // Apply price filter
     if (minPrice !== undefined && maxPrice !== undefined) {
@@ -85,10 +93,16 @@ export class ProductService {
         minPrice,
         maxPrice,
       });
+      countQueryBuilder.andWhere('product.price BETWEEN :minPrice AND :maxPrice', {
+        minPrice,
+        maxPrice,
+      });
     } else if (minPrice !== undefined) {
       queryBuilder.andWhere('product.price >= :minPrice', { minPrice });
+      countQueryBuilder.andWhere('product.price >= :minPrice', { minPrice });
     } else if (maxPrice !== undefined) {
       queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
+      countQueryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
     }
 
     // Apply search query on title and attributes
@@ -97,40 +111,30 @@ export class ProductService {
         `(product.title ILIKE :query OR product.attributes::text ILIKE :query)`,
         { query: `%${query}%` },
       );
-    }
-
-    // Apply relations and ordering
-    queryBuilder
-      .leftJoinAndSelect('product.images', 'productImages')
-      .leftJoinAndSelect('product.categories', 'categories')
-      .leftJoinAndSelect('product.productType', 'productType')
-      .orderBy('product.id', 'ASC')
-      .take(limit)
-      .skip(offset);
-
-    const products = await queryBuilder.getMany();
-
-    // Get total count for pagination
-    const countQueryBuilder = this.productRepository.createQueryBuilder('product');
-
-    if (minPrice !== undefined && maxPrice !== undefined) {
-      countQueryBuilder.andWhere('product.price BETWEEN :minPrice AND :maxPrice', {
-        minPrice,
-        maxPrice,
-      });
-    } else if (minPrice !== undefined) {
-      countQueryBuilder.andWhere('product.price >= :minPrice', { minPrice });
-    } else if (maxPrice !== undefined) {
-      countQueryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
-    }
-
-    if (query) {
       countQueryBuilder.andWhere(
         `(product.title ILIKE :query OR product.attributes::text ILIKE :query)`,
         { query: `%${query}%` },
       );
     }
 
+    if (category) {
+      const categoryFilter = `
+        EXISTS (
+          SELECT 1 FROM products_categories_category pcc
+          JOIN category c ON c.id = pcc."categoryId"
+          WHERE pcc."productsId" = product.id
+          AND (c.slug ILIKE :category OR c.name ILIKE :category)
+        )`;
+      queryBuilder.andWhere(categoryFilter, { category: `%${category}%` });
+      countQueryBuilder.andWhere(categoryFilter, { category: `%${category}%` });
+    }
+
+    queryBuilder
+      .orderBy('product.id', 'ASC')
+      .take(limit)
+      .skip(offset);
+
+    const products = await queryBuilder.getMany();
     const totalProducts = await countQueryBuilder.getCount();
 
     return {
