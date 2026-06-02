@@ -28,7 +28,7 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  @Auth()
+  @Auth(ValidRoles.admin)
   @ApiResponse({
     status: 201,
     description: 'Product was created',
