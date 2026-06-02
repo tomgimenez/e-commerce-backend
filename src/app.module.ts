@@ -10,11 +10,12 @@ import { CommonModule } from './common/common.module';
 import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
-import { MessagesWsModule } from './messages-ws/messages-ws.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 import { CategoryModule } from './category/category.module';
 import { ProductTypesModule } from './product-type/product-type.module';
 import { S3Module } from './s3/s3.module';
 import { UserModule } from './user/user.module';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
@@ -51,7 +52,7 @@ import { UserModule } from './user/user.module';
 
     AuthModule,
 
-    MessagesWsModule,
+    ChatbotModule,
 
     CategoryModule,
 
@@ -60,6 +61,8 @@ import { UserModule } from './user/user.module';
     S3Module,
 
     UserModule,
+
+    RabbitmqModule,
 
   ],
 })
