@@ -23,15 +23,6 @@ export class PaginationDto {
   offset?: number;
 
   @ApiProperty({
-    default: '',
-    description: 'Filter results by gender',
-    enum: ['men', 'women', 'unisex', 'kid', ''],
-    example: 'men',
-  })
-  @IsOptional()
-  gender?: 'men' | 'women' | 'unisex' | 'kid' | '';
-
-  @ApiProperty({
     required: false,
     description: 'Precio mínimo para filtrar resultados',
     example: 0,
@@ -53,13 +44,12 @@ export class PaginationDto {
 
   @ApiProperty({
     required: false,
-    description: 'Filtrar resultados por tallas. Ejemplo: "XS,S,M"',
-    isArray: false,
-    example: 'XS,S,M',
+    description: 'Filtrar por categoría (nombre o slug)',
+    example: 'fantasia',
   })
   @IsOptional()
   @Type(() => String)
-  sizes?: string;
+  category?: string;
 
   @ApiProperty({
     required: false,
