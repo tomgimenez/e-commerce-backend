@@ -7,7 +7,6 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(RabbitmqService.name);
   private connection: amqp.ChannelModel;
   private channel: amqp.Channel;
-  private connected = false;
 
   async onModuleInit() {
     await this.connect();
@@ -27,7 +26,6 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
 
     this.connection = await amqp.connect(url);
     this.channel = await this.connection.createChannel();
-    this.connected = true;
     this.logger.log('RabbitMQ connected');
   }
 
