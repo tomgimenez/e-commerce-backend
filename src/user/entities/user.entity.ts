@@ -21,7 +21,10 @@ export class User {
     password: string;
 
     @Column('text')
-    fullName: string;
+    name: string;
+
+    @Column('text')
+    lastname: string;
 
     @Column('bool', {
         default: true

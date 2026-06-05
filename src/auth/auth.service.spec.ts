@@ -78,7 +78,7 @@ describe('AuthService', () => {
       userService.create.mockResolvedValue(user);
       jwtService.sign.mockReturnValue('jwt-token');
 
-      const result = await service.register({email: 'test@test.com', password: '1234', fullName: 'test name'});
+      const result = await service.register({email: 'test@test.com', password: '1234', name: 'test name', lastname: 'test lastname'});
 
       expect(result).toStrictEqual({
         user: {
@@ -94,7 +94,7 @@ describe('AuthService', () => {
       userService.create.mockRejectedValue(new BadRequestException('email already exists'));
 
       await expect(
-        service.register({ email: 'test@test.com', password: '1234', fullName: 'test name' })
+        service.register({ email: 'test@test.com', password: '1234', name: 'test name', lastname: 'test lastname' })
       ).rejects.toThrow(BadRequestException);
     })
   });

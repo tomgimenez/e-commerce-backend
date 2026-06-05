@@ -51,7 +51,7 @@ describe('UserRoleGuard', () => {
 
   describe('when the user does not have any of the required roles', () => {
     it('should throw ForbiddenException', () => {
-      const user = { fullName: 'Jane Doe', roleNames: [ValidRoles.user] };
+      const user = { name: 'Jane', lastname: 'Doe', roleNames: [ValidRoles.user] };
       const guard = new UserRoleGuard(buildReflector([ValidRoles.admin]));
       const ctx   = buildMockContext(user);
 
@@ -59,7 +59,7 @@ describe('UserRoleGuard', () => {
     });
 
     it('should include the user name and required roles in the error message', () => {
-      const user = { fullName: 'Jane Doe', roleNames: [ValidRoles.user] };
+      const user = { name: 'Jane', lastname: 'Doe', roleNames: [ValidRoles.user] };
       const guard = new UserRoleGuard(buildReflector([ValidRoles.admin]));
       const ctx   = buildMockContext(user);
 
@@ -71,7 +71,7 @@ describe('UserRoleGuard', () => {
 
   describe('when the user has at least one of the required roles', () => {
     it('should allow access when user has the exact required role', () => {
-      const user  = { fullName: 'John Admin', roleNames: [ValidRoles.admin] };
+      const user  = { name: 'John', lastname: 'Admin', roleNames: [ValidRoles.admin] };
       const guard = new UserRoleGuard(buildReflector([ValidRoles.admin]));
       const ctx   = buildMockContext(user);
 
@@ -79,7 +79,7 @@ describe('UserRoleGuard', () => {
     });
 
     it('should allow access when user has multiple roles and one matches', () => {
-      const user  = { fullName: 'John Admin', roleNames: [ValidRoles.user, ValidRoles.admin] };
+      const user  = { name: 'John', lastname: 'Admin', roleNames: [ValidRoles.user, ValidRoles.admin] };
       const guard = new UserRoleGuard(buildReflector([ValidRoles.admin]));
       const ctx   = buildMockContext(user);
 
@@ -87,7 +87,7 @@ describe('UserRoleGuard', () => {
     });
 
     it('should allow access when multiple roles are required and user has one of them', () => {
-      const user  = { fullName: 'Super', roleNames: [ValidRoles.superUser] };
+      const user  = { name: 'Super', lastname: 'User', roleNames: [ValidRoles.superUser] };
       const guard = new UserRoleGuard(buildReflector([ValidRoles.admin, ValidRoles.superUser]));
       const ctx   = buildMockContext(user);
 
@@ -103,7 +103,7 @@ describe('UserRoleGuard', () => {
       const ctx = {
         switchToHttp: jest.fn().mockReturnValue({
           getRequest: jest.fn().mockReturnValue({
-            user: { fullName: 'Admin', roleNames: [ValidRoles.admin] },
+            user: { name: 'Admin', lastname: 'User', roleNames: [ValidRoles.admin] },
           }),
         }),
         getHandler: jest.fn().mockReturnValue(handler),

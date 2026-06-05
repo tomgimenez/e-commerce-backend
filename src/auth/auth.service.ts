@@ -68,7 +68,7 @@ export class AuthService {
       QUEUE_OUT,
       Buffer.from(JSON.stringify({
         email: user.email,
-        fullName: user.fullName
+        name: user.name
       })),
       { persistent: true }
     );

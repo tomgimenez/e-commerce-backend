@@ -35,7 +35,7 @@ export class UserService {
   async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true, id: true, fullName: true, isActive: true, roles: true}
+      select: { email: true, password: true, id: true, name: true, lastname: true, isActive: true, roles: true}
     });
 
     if ( !user ) 
@@ -47,7 +47,7 @@ export class UserService {
   async findById(id: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      select: { email: true, password: true, id: true, fullName: true, isActive: true, roles: true}
+      select: { email: true, password: true, id: true, name: true, lastname: true, isActive: true, roles: true}
     });
 
     if (!user)

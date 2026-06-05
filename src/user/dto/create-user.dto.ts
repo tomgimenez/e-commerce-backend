@@ -18,6 +18,10 @@ export class CreateUserDto {
 
     @IsString()
     @MinLength(1)
-    fullName: string;
+    name: string;
+
+    @IsString()
+    @MinLength(1)
+    lastname: string;
 
 }

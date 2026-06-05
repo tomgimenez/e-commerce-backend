@@ -22,14 +22,16 @@ const mockUserRepository = {
 const createUserDto: CreateUserDto = {
   email:    'john@example.com',
   password: 'plain-password',
-  fullName: 'John Doe',
+  name: 'John',
+  lastname: 'Doe'
 };
 
 const savedUser: User = {
   id:       'uuid-123',
   email:    'john@example.com',
   password: 'hashed-password',
-  fullName: 'John Doe',
+  name: 'John',
+  lastname: 'Doe',
   isActive: true,
   roles:    [],
 } as User;
@@ -65,7 +67,8 @@ describe('UserService', () => {
       expect(bcrypt.hashSync).toHaveBeenCalledWith('plain-password', 10);
       expect(mockUserRepository.create).toHaveBeenCalledWith({
         email:    createUserDto.email,
-        fullName: createUserDto.fullName,
+        name: createUserDto.name,
+        lastname: createUserDto.lastname,
         password: 'hashed-password',
       });
     });
@@ -86,7 +89,8 @@ describe('UserService', () => {
       const result = await service.create(createUserDto);
 
       expect(result.email).toBe(savedUser.email);
-      expect(result.fullName).toBe(savedUser.fullName);
+      expect(result.name).toBe(savedUser.name);
+      expect(result.lastname).toBe(savedUser.lastname);
       expect(result.id).toBe(savedUser.id);
     });
 
@@ -127,7 +131,7 @@ describe('UserService', () => {
 
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where:  { email: 'john@example.com' },
-        select: { email: true, password: true, id: true, fullName: true, isActive: true, roles: true },
+        select: { email: true, password: true, id: true, name: true, isActive: true, roles: true },
       });
     });
 
@@ -154,7 +158,7 @@ describe('UserService', () => {
 
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where:  { id: 'uuid-123' },
-        select: { email: true, password: true, id: true, fullName: true, isActive: true, roles: true },
+        select: { email: true, password: true, id: true, name: true, isActive: true, roles: true },
       });
     });
 
