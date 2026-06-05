@@ -8,17 +8,21 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserModule } from 'src/user/user.module';
 import { RabbitmqModule } from 'src/rabbitmq/rabbitmq.module';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, RabbitmqModule ],
+  providers: [AuthService, JwtStrategy ],
   imports: [
     ConfigModule,
     UserModule,
+    NotificationsModule,
+    RabbitmqModule,
 
     PassportModule.register({ defaultStrategy: 'jwt' }),
 
     JwtModule.registerAsync({
+      global: true,
       imports: [ ConfigModule ],
       inject: [ ConfigService ],
       useFactory: ( configService: ConfigService ) => {
