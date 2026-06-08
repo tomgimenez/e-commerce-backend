@@ -131,7 +131,7 @@ describe('UserService', () => {
 
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where:  { email: 'john@example.com' },
-        select: { email: true, password: true, id: true, name: true, isActive: true, roles: true },
+        select: { email: true, password: true, id: true, name: true, lastname: true, isActive: true, roles: true },
       });
     });
 
@@ -158,7 +158,7 @@ describe('UserService', () => {
 
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where:  { id: 'uuid-123' },
-        select: { email: true, password: true, id: true, name: true, isActive: true, roles: true },
+        select: { email: true, password: true, id: true, name: true, lastname: true, isActive: true, roles: true },
       });
     });
 
