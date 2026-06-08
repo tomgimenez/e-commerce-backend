@@ -6,11 +6,23 @@ import * as bcrypt from 'bcrypt';
 import { AuthService } from "./auth.service";
 import { UserService } from "../user/user.service";
 import { User } from "../user/entities/user.entity";
+import { RabbitmqService } from "../rabbitmq/rabbitmq.service";
+import { NotificationsService } from "../notifications/notifications.service";
 
 describe('AuthService', () => {
   let service: AuthService;
   let userService: jest.Mocked<UserService>;
   let jwtService: jest.Mocked<JwtService>;
+
+  const mockChannel = {
+    assertQueue: jest.fn().mockResolvedValue(undefined),
+    sendToQueue: jest.fn(),
+  };
+
+  const mockRabbitmqService = {
+    publish: jest.fn(),
+    getChannel: jest.fn().mockReturnValue(mockChannel),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,7 +40,17 @@ describe('AuthService', () => {
           useValue: {
             sign: jest.fn()
           }
-        }
+        },
+        {
+          provide: RabbitmqService,
+          useValue: mockRabbitmqService,
+        },
+        {
+          provide: NotificationsService,
+          useValue: {
+            createWelcomeNotification: jest.fn()
+          },
+        },
       ]
     }).compile();
 
