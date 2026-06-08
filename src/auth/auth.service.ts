@@ -7,9 +7,9 @@ import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 import { LoginUserDto } from './dto/login-user.dto';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { RabbitmqService } from 'src/rabbitmq/rabbitmq.service';
-import { NotificationsService } from 'src/notifications/notifications.service';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 const QUEUE_OUT = 'user.registered';
 
