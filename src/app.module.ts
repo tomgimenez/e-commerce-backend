@@ -17,6 +17,7 @@ import { S3Module } from './s3/s3.module';
 import { UserModule } from './user/user.module';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -66,6 +67,8 @@ import { NotificationsModule } from './notifications/notifications.module';
     RabbitmqModule,
 
     NotificationsModule,
+
+    CartModule,
 
   ],
 })

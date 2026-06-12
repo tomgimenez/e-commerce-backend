@@ -1,0 +1,37 @@
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import { AddItemDto } from './dto/add-item.dto';
+import { CartService } from './cart.service';
+import { User } from 'src/user/entities/user.entity';
+import { GetUser } from 'src/user/decorators/get-user.decorator';
+import { Auth } from 'src/auth/decorators';
+import { UpdateItemDto } from './dto/update-item.dto';
+
+@Controller('cart')
+export class CartController {
+
+  constructor(
+    private readonly cartService: CartService
+  ) {}
+
+  @Get()
+  @Auth()
+  async getByUserId(@GetUser() user: User) {
+    return await this.cartService.find(user.id)
+  }
+
+  @Post('add-item')
+  @Auth()
+  async addItem(@Body() addItemDto: AddItemDto, @GetUser() user: User) {
+    await this.cartService.addItem(addItemDto, user.id);
+  }
+
+  @Patch('update-item/:cartItemId')
+  @Auth()
+  async updateItem(
+    @Param('cartItemId', ParseUUIDPipe) cartItemId: string,
+    @Body() updateItemDto: UpdateItemDto, 
+    @GetUser() user: User
+  ) {
+    await this.cartService.updateItem(cartItemId, updateItemDto, user.id);
+  }
+}
