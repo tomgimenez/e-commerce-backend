@@ -7,6 +7,7 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(RabbitmqService.name);
   private connection: amqp.ChannelModel;
   private channel: amqp.Channel;
+  private isConnected = false;
 
   async onModuleInit() {
     await this.connect();
@@ -24,14 +25,22 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
     if (!url)
       throw new Error('RABBITMQ_URL is not defined in environment variables');
 
-    this.connection = await amqp.connect(url);
-    this.channel = await this.connection.createChannel();
-    this.logger.log('RabbitMQ connected');
+    try {
+      this.connection = await amqp.connect(url);
+      this.channel = await this.connection.createChannel();
+      this.isConnected = true;
+      this.logger.log('RabbitMQ connected');
+    } catch (error) {
+      this.isConnected = false;
+      this.logger.warn(`RabbitMQ unavailable, dependent services will be disabled: ${error}`);
+    }
   }
 
   getChannel(): amqp.Channel {
-    if (!this.channel)
-      throw new Error('RabbitMQ channel not initialized');
+    if (!this.channel || !this.isConnected) {
+      this.logger.warn('RabbitMQ channel not available');
+      return null;
+    }
 
     return this.channel;
   }
