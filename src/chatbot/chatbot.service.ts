@@ -20,6 +20,11 @@ export class ChatbotService implements OnApplicationBootstrap  {
   async sendMessage(sessionId: string, userMessage: string): Promise<void> {
     const channel = this.rabbitmqService.getChannel();
 
+    if (!channel) {
+      this.logger.warn('Message skipped: RabbitMQ unavailable');
+      return;
+    }
+
     await channel.assertQueue(QUEUE_IN, { durable: true });
 
     channel.sendToQueue(
@@ -33,6 +38,11 @@ export class ChatbotService implements OnApplicationBootstrap  {
 
   private async listenForResponses(): Promise<void> {
     const channel = this.rabbitmqService.getChannel();
+
+    if (!channel) {
+      this.logger.warn('Message skipped: RabbitMQ unavailable');
+      return;
+    }
 
     await channel.assertQueue(QUEUE_OUT, { durable: true });
 
