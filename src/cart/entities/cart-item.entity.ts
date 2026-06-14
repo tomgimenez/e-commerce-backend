@@ -1,6 +1,6 @@
 import { Product } from "../../product/entities";
 import { Cart } from "./cart.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class CartItem {
@@ -19,4 +19,7 @@ export class CartItem {
 
   @Column('decimal', { precision: 10, scale: 2 })
   unitPrice: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

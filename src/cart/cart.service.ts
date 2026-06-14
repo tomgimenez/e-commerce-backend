@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { AddItemDto } from './dto/add-item.dto';
-import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartItem } from './entities/cart-item.entity';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
 export class CartService {
@@ -14,14 +14,37 @@ export class CartService {
     @InjectRepository(Cart)
     private readonly cartRepository: Repository<Cart>,
     @InjectRepository(CartItem)
-    private readonly cartItemRepository: Repository<CartItem>
+    private readonly cartItemRepository: Repository<CartItem>,
+    private readonly s3Service: S3Service
   ) {}
 
   async find(userId: string) {
-    return await this.cartRepository.findOne({
+    const cart = await this.cartRepository.findOne({
       where: { user: { id: userId} },
-      relations: ['items', 'items.product']
+      relations: ['items', 'items.product', 'items.product.images'],
+      order: {
+        items: {
+          createdAt: 'ASC'
+        }
+      }
     });
+
+    if (!cart) return null;
+
+    return {
+      ...cart,
+      items: cart.items.map(item => ({
+        ...item,
+        product: {
+          ...item.product,
+          images: item.product.images.map(img => ({
+            ...img,
+            key: img.url,
+            url: this.s3Service.buildUrl(img.url),
+          })),
+        },
+      })),
+    };
   }
 
   async addItem(addItemDto: AddItemDto, userId: string) {
@@ -70,5 +93,12 @@ export class CartService {
     
     item.quantity = updateItemDto.quantity;
     await this.cartItemRepository.save(item);
+  }
+
+  async deleteItem(cartItemId: string) {
+    const item = await this.cartItemRepository.findOneBy({id: cartItemId});
+    await this.cartItemRepository.remove(item);
+
+    return true;
   }
 }
