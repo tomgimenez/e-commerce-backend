@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { AddItemDto } from './dto/add-item.dto';
 import { CartService } from './cart.service';
 import { User } from 'src/user/entities/user.entity';
@@ -33,5 +33,11 @@ export class CartController {
     @GetUser() user: User
   ) {
     await this.cartService.updateItem(cartItemId, updateItemDto, user.id);
+  }
+
+  @Delete('delete-item/:cartItemId')
+  @Auth()
+  async deleteItem(@Param('cartItemId', ParseUUIDPipe) cartItemId: string) {
+    return await this.cartService.deleteItem(cartItemId);
   }
 }
