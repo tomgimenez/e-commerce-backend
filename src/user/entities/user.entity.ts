@@ -2,6 +2,8 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, JoinTable, ManyToMany, OneT
 import { Product } from '../../product/entities';
 import { Role } from './role.entity';
 import { ValidRoles } from '../enums/valid-roles';
+import { Address } from 'src/address/entities/address.entity';
+import { Order } from 'src/order/entities/order.entity';
 
 
 @Entity('users')
@@ -11,12 +13,12 @@ export class User {
     id: string;
 
     @Column('text', {
-        unique: true
+      unique: true
     })
     email: string;
 
     @Column('text', {
-        select: false
+      select: false
     })
     password: string;
 
@@ -27,37 +29,45 @@ export class User {
     lastname: string;
 
     @Column('bool', {
-        default: true
+      default: true
     })
     isActive: boolean;
 
     @ManyToMany(() => Role, (role) => role.users, { eager: true })
     @JoinTable({
-        name: 'user_roles',
-        joinColumn:        { name: 'user_id',  referencedColumnName: 'id' },
-        inverseJoinColumn: { name: 'role_id',  referencedColumnName: 'id' },
+      name: 'user_roles',
+      joinColumn:        { name: 'user_id',  referencedColumnName: 'id' },
+      inverseJoinColumn: { name: 'role_id',  referencedColumnName: 'id' },
     })
     roles: Role[];
 
     @OneToMany(
-        () => Product,
-        ( product ) => product.user
+      () => Product,
+      ( product ) => product.user
     )
     product: Product;
+
+    @OneToMany(
+      () => Address,
+      (addresses) => addresses.user)
+    addresses: Address[];
+
+    @OneToMany(() => Order, order => order.user)
+    orders: Order[];
 
 
     @BeforeInsert()
     checkFieldsBeforeInsert() {
-        this.email = this.email.toLowerCase().trim();
+      this.email = this.email.toLowerCase().trim();
     }
 
     @BeforeUpdate()
     checkFieldsBeforeUpdate() {
-        this.checkFieldsBeforeInsert();   
+      this.checkFieldsBeforeInsert();   
     }
 
     get roleNames(): ValidRoles[] {
-        return this.roles?.map((r) => r.name) ?? [];
-  }
+      return this.roles?.map((r) => r.name) ?? [];
+    }
 
 }
