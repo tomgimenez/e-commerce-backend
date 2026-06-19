@@ -3,6 +3,7 @@ import { CartService } from './cart.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Cart } from './entities/cart.entity';
 import { CartItem } from './entities/cart-item.entity';
+import { S3Service } from '../s3/s3.service';
 
 describe('CartService', () => {
   let service: CartService;
@@ -37,6 +38,10 @@ describe('CartService', () => {
         {
           provide: getRepositoryToken(CartItem),
           useValue: mockCartItemRepository,
+        },
+        {
+          provide: S3Service,
+          useValue: { buildUrl: jest.fn((key) => `https://s3.bucket/${key}`) },
         },
       ],
     }).compile();
