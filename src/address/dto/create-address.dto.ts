@@ -19,6 +19,22 @@ export class CreateAddressDto {
   number: string;
 
   @IsString()
+  @IsOptional()
+  floor?: string;
+
+  @IsString()
+  @IsOptional()
+  apartment?: string;
+
+  @IsString()
+  @IsOptional()
+  between_streets?: string;
+
+  @IsString()
+  @IsOptional()
+  notes?: string;
+
+  @IsString()
   @IsNotEmpty({ message: 'La ciudad no puede estar vacía' })
   @MinLength(2, { message: 'La ciudad debe tener al menos 2 caracteres' })
   @MaxLength(100, { message: 'La ciudad no puede exceder 100 caracteres' })

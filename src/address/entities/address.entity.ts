@@ -19,6 +19,18 @@ export class Address {
   @Column()
   number: string;
 
+  @Column({ nullable: true })
+  floor: string; // piso
+
+  @Column({ nullable: true })
+  apartment: string;
+
+  @Column({ nullable: true })
+  between_streets: string;
+
+  @Column({ nullable: true })
+  notes: string;
+
   @Column()
   city: string;
 
