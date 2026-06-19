@@ -5,7 +5,7 @@ import { Cart } from './entities/cart.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartItem } from './entities/cart-item.entity';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { S3Service } from 'src/s3/s3.service';
+import { S3Service } from '../s3/s3.service';
 
 @Injectable()
 export class CartService {

@@ -1,7 +1,7 @@
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { OrderItem } from './order-item.entity';
-import { Address } from 'src/address/entities/address.entity';
+import { Address } from '../../address/entities/address.entity';
 
 
 export enum OrderStatus {

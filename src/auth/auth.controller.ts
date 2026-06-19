@@ -9,7 +9,7 @@ import { RawHeaders, Auth } from './decorators';
 import { RoleProtected } from './decorators/role-protected.decorator';
 
 import { UserRoleGuard } from '../user/guards/user-role.guard';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { User } from '../user/entities/user.entity';
 import { ValidRoles } from '../user/enums/valid-roles';

@@ -2,8 +2,8 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, JoinTable, ManyToMany, OneT
 import { Product } from '../../product/entities';
 import { Role } from './role.entity';
 import { ValidRoles } from '../enums/valid-roles';
-import { Address } from 'src/address/entities/address.entity';
-import { Order } from 'src/order/entities/order.entity';
+import { Address } from '../../address/entities/address.entity';
+import { Order } from '../../order/entities/order.entity';
 
 
 @Entity('users')

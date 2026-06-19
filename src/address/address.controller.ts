@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Patch, Post, Param, ParseUUIDPipe } from '@nestjs/common';
 import { AddressService } from './address.service';
-import { User } from 'src/user/entities/user.entity';
-import { GetUser } from 'src/user/decorators/get-user.decorator';
+import { User } from '../user/entities/user.entity';
+import { GetUser } from '../user/decorators/get-user.decorator';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { Auth } from 'src/auth/decorators';
+import { Auth } from '../auth/decorators';
 
 @Controller('address')
 export class AddressController {
