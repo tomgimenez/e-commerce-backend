@@ -21,6 +21,7 @@ import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { AddressModule } from './address/address.module';
 import { ShippingModule } from './shipping/shipping.module';
+import { TaxModule } from './tax/tax.module';
 
 @Module({
   imports: [
@@ -78,6 +79,8 @@ import { ShippingModule } from './shipping/shipping.module';
     AddressModule,
 
     ShippingModule,
+
+    TaxModule,
 
   ],
 })
