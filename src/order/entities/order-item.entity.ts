@@ -16,7 +16,10 @@ export class OrderItem {
   @Column()
   snapshot_name: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, transformer: {
+    to: (value: number) => value,
+    from: (value: string) => Number.parseFloat(value),
+  }})
   snapshot_price: number;
 
   @Column({ type: 'int' })
