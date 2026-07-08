@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { OrderItem } from "./order-item.entity";
-import { User } from "src/user/entities/user.entity";
-import { Address } from "src/address/entities/address.entity";
+import { User } from "../../user/entities/user.entity";
+import { Address } from "../../address/entities/address.entity";
 
 export enum OrderStatus {
   PENDING = 'pending',
