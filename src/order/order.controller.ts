@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, Post } from "@nestjs/common";
+import { Body, Controller, Get, Headers, Param, ParseIntPipe, Post } from "@nestjs/common";
 import { OrderService } from "./order.service";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { Auth } from "src/auth/decorators";
@@ -18,5 +18,11 @@ export class OrderController {
   @Post('webhook')
   handleWebhook(@Body() body: any, @Headers() headers: any) {
     return this.orderService.handleWebhook(body, headers);
+  }
+
+  @Get(':id')
+  @Auth()
+  findOne(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.orderService.findOne(id, user);
   }
 }

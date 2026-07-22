@@ -119,8 +119,8 @@ export class OrderService {
           failure: `${process.env.FRONTEND_URL}/checkout/failure`,
           pending: `${process.env.FRONTEND_URL}/checkout/pending`,
         },
-        auto_return: 'approved',
-        notification_url: `${process.env.BACKEND_URL}/orders/webhook`,
+        // auto_return: 'approved',
+        notification_url: `${process.env.BACKEND_URL}/api/order/webhook`,
       },
     });
 
@@ -133,6 +133,7 @@ export class OrderService {
   }
 
   async handleWebhook(body: any, headers: any) {
+
     if (body.type !== 'payment') return;
 
     const paymentId = body.data?.id;
@@ -160,5 +161,33 @@ export class OrderService {
         status: orderStatus,
       }
     );
+
+
+    // CLEAN THE USER CART
+    if (orderStatus === OrderStatus.PAID) {
+      const order = await this.orderRepository.findOne({
+        where: { id: Number(orderId) },
+        relations: ['user'],
+      });
+
+      if (order?.user) {
+        const cart = await this.cartRepository.findOne({
+          where: { user: { id: order.user.id } },
+          relations: ['items'],
+        });
+
+        if (cart) {
+          cart.items = [];
+          await this.cartRepository.save(cart);
+        }
+      }
+    }
+  }
+
+  async findOne(id: number, user: User): Promise<Order | null> {
+    return this.orderRepository.findOne({
+      where: { id, user: { id: user.id } },
+      relations: ['items', 'items.product', 'shipping_address'],
+    });
   }
 }
