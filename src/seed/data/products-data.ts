@@ -1,6 +1,8 @@
 export const productsData = [
   {
     "title": "The Fellowship of the Ring",
+    "slug": "the-fellowship-of-the-ring",
+    "isActive": true,
     "description": "The first part of the epic masterpiece The Lord of the Rings, following Frodo Baggins as he begins his perilous journey to destroy the One Ring.",
     "images": [
       "fellowship-of-the-ring.jpg"
@@ -22,6 +24,8 @@ export const productsData = [
   },
   {
     "title": "Harry Potter and the Philosopher's Stone",
+    "slug": "harry-potter-and-the-philosophers-stone",
+    "isActive": true,
     "description": "A young boy discovers he is a wizard and attends Hogwarts School of Witchcraft and Wizardry, changing the world of magic forever.",
     "images": ["harry-potter-philosophers-stone.jpg",],
     "stock": 200,
@@ -40,6 +44,8 @@ export const productsData = [
   },
   {
     "title": "The Hobbit",
+    "slug": "the-hobbit",
+    "isActive": true,
     "description": "Bilbo Baggins, a home-loving hobbit, is whisked away on an adventure by a wizard and a company of dwarves to reclaim a lost treasure.",
     "images": ["the-hobbit.jpg"],
     "stock": 85,
@@ -58,6 +64,8 @@ export const productsData = [
   },
   {
     "title": "The Name of the Wind",
+    "slug": "the-name-of-the-wind",
+    "isActive": true,
     "description": "The tale of Kvothe, a legendary figure who tells his own story of magic, music, and mystery.",
     "images": ["the-name-of-the-wind.jpg"],
     "stock": 12,
@@ -76,6 +84,8 @@ export const productsData = [
   },
   {
     "title": "The Way of Kings",
+    "slug": "the-way-of-kings",
+    "isActive": true,
     "description": "The first book in The Stormlight Archive, an epic masterpiece set on the world of Roshar, a world of stone and storms.",
     "images": ["the-way-of-kings.jpg"],
     "stock": 45,
@@ -94,6 +104,8 @@ export const productsData = [
   },
   {
     "title": "The Blade Itself",
+    "slug": "the-blade-itself",
+    "isActive": true,
     "description": "A gritty tale where the line between hero and villain is non-existent. The first book of The First Law trilogy.",
     "images": ["the-blade-itself.jpg"],
     "stock": 30,
@@ -112,6 +124,8 @@ export const productsData = [
   },
   {
     "title": "A Court of Thorns and Roses",
+    "slug": "a-court-of-thorns-and-roses",
+    "isActive": true,
     "description": "A blend of romance and faerie lore where a young huntress is captured by a lethal, immortal faerie.",
     "images": ["a-court-of-thrones-and-roses.jpg"],
     "stock": 150,
@@ -130,6 +144,8 @@ export const productsData = [
   },
   {
     "title": "Storm Front",
+    "slug": "storm-front",
+    "isActive": true,
     "description": "Harry Dresden is a wizard for hire in modern-day Chicago, dealing with supernatural crimes the police can't explain.",
     "images": ["storm-front.jpg"],
     "stock": 25,
@@ -148,6 +164,8 @@ export const productsData = [
   },
   {
     "title": "The Lies of Locke Lamora",
+    "slug": "the-lies-of-locke-lamora",
+    "isActive": true,
     "description": "In the city of Camorr, a group of elite con artists known as the Gentleman Bastards plot their biggest heist.",
     "images": ["the-lies-of-locke-lamora.jpg"],
     "stock": 18,
@@ -166,6 +184,8 @@ export const productsData = [
   },
   {
     "title": "Gardens of the Moon",
+    "slug": "gardens-of-the-moon",
+    "isActive": true,
     "description": "The sprawling opening to the Malazan Book of the Fallen, featuring gods, mages, and elder races.",
     "images": ["gardens-of-the-moon.jpg"],
     "stock": 8,
@@ -184,6 +204,8 @@ export const productsData = [
   },
   {
     "title": "Circe",
+    "slug": "circe",
+    "isActive": true,
     "description": "A bold reimagining of the Greek myth, following the banished witch Circe as she tames wild beasts and crosses paths with gods.",
     "images": ["circe.jpg"],
     "stock": 80,
@@ -202,6 +224,8 @@ export const productsData = [
   },
   {
     "title": "The Eye of the World",
+    "slug": "the-eye-of-the-world",
+    "isActive": true,
     "description": "The journey begins for five young villagers as they are thrust into a world of prophecy and danger.",
     "images": ["the-eye-of-the-world.jpg"],
     "stock": 60,
@@ -220,6 +244,8 @@ export const productsData = [
   },
   {
     "title": "American Gods",
+    "slug": "american-gods",
+    "isActive": true,
     "description": "Old gods and new gods battle for the soul of America in this dark, surreal road trip.",
     "images": ["american-gods.jpg"],
     "stock": 40,
@@ -238,6 +264,8 @@ export const productsData = [
   },
   {
     "title": "A Game of Thrones",
+    "slug": "a-game-of-thrones",
+    "isActive": true,
     "description": "Kings and queens, knights and renegades, liars and honest men play a deadly game for control of the Seven Kingdoms.",
     "images": ["a-game-of-thrones.jpg"],
     "stock": 55,
@@ -256,6 +284,8 @@ export const productsData = [
   },
   {
     "title": "The Last Wish",
+    "slug": "the-last-wish",
+    "isActive": true,
     "description": "Geralt of Rivia is a Witcher, a man whose magic powers, enhanced by long training and a mysterious elixir, have made him a brilliant fighter and a merciless assassin.",
     "images": ["the-last-wish.jpg"],
     "stock": 40,
@@ -274,6 +304,8 @@ export const productsData = [
   },
   {
     "title": "Assassin's Apprentice",
+    "slug": "assassins-apprentice",
+    "isActive": true,
     "description": "Young Fitz is the bastard son of a noble prince, trained in the art of the assassin while struggling with his magical link to animals.",
     "images": ["assassins-apprentice.jpg"],
     "stock": 25,
@@ -292,6 +324,8 @@ export const productsData = [
   },
   {
     "title": "Mistborn: The Final Empire",
+    "slug": "mistborn-the-final-empire",
+    "isActive": true,
     "description": "In a world where ash falls from the sky, a street urchin discovers she has the power of an Allomancer.",
     "images": ["mistborn-the-final-empire.jpg"],
     "stock": 65,
@@ -310,6 +344,8 @@ export const productsData = [
   },
   {
     "title": "Good Omens",
+    "slug": "good-omens",
+    "isActive": true,
     "description": "An angel and a demon who have lived on Earth since the Beginning must team up to stop the approaching Apocalypse.",
     "images": ["good-omens.jpg"],
     "stock": 30,
@@ -328,6 +364,8 @@ export const productsData = [
   },
   {
     "title": "The Poppy War",
+    "slug": "the-poppy-war",
+    "isActive": true,
     "description": "A dark historical fantasy inspired by 20th-century China, following a war orphan who enters a prestigious military academy.",
     "images": ["the-poppy-war.jpg"],
     "stock": 20,
@@ -346,6 +384,8 @@ export const productsData = [
   },
   {
     "title": "The Color of Magic",
+    "slug": "the-color-of-magic",
+    "isActive": true,
     "description": "The first book of the Discworld series, following the wizard Rincewind and the world's first tourist.",
     "images": ["the-color-of-magic.jpg"],
     "stock": 45,
@@ -364,6 +404,8 @@ export const productsData = [
   },
   {
     "title": "Ninth House",
+    "slug": "ninth-house",
+    "isActive": true,
     "description": "Alex Stern can see ghosts, a power that lands her a spot at Yale to monitor the school's occult secret societies.",
     "images": ["the-ninth-house.jpg"],
     "stock": 35,
@@ -382,6 +424,8 @@ export const productsData = [
   },
   {
     "title": "The Priory of the Orange Tree",
+    "slug": "the-priory-of-the-orange-tree",
+    "isActive": true,
     "description": "A sprawling epic featuring dragon riders, queens, and an ancient evil threatening to return.",
     "images": ["the-priory-of-the-orange-tree.jpg"],
     "stock": 15,
@@ -400,6 +444,8 @@ export const productsData = [
   },
   {
     "title": "Fourth Wing",
+    "slug": "fourth-wing",
+    "isActive": true,
     "description": "Violet Sorrengail must survive a brutal elite college for dragon riders where the competition is literally deadly.",
     "images": ["fourth-wing.jpg"],
     "stock": 90,
@@ -418,6 +464,8 @@ export const productsData = [
   },
   {
     "title": "The Black Company",
+    "slug": "the-black-company",
+    "isActive": true,
     "description": "Follows a group of elite mercenaries through a dark and gritty world serving a powerful sorceress.",
     "images": ["the-black-company.jpg"],
     "stock": 12,
@@ -436,6 +484,8 @@ export const productsData = [
   },
   {
     "title": "Ocean at the End of the Lane",
+    "slug": "ocean-at-the-end-of-the-lane",
+    "isActive": true,
     "description": "A man returns to his childhood home and remembers a series of supernatural events from his past.",
     "images": ["ocean-at-the-end-of-the-lane.jpg"],
     "stock": 25,
@@ -454,6 +504,8 @@ export const productsData = [
   },
   {
     "title": "Eragon",
+    "slug": "eragon",
+    "isActive": true,
     "description": "A farm boy discovers a polished blue stone that hatches into a dragon, thrusting him into a world of magic and power.",
     "images": ["eragon.jpg"],
     "stock": 50,
@@ -472,6 +524,8 @@ export const productsData = [
   },
   {
     "title": "The Lion, the Witch and the Wardrobe",
+    "slug": "the-lion-the-witch-and-the-wardrobe",
+    "isActive": true,
     "description": "Four siblings step through a wardrobe into the magical land of Narnia, frozen in eternal winter.",
     "images": ["the-lion-the-witch-wardrobe.jpg"],
     "stock": 110,
@@ -490,6 +544,8 @@ export const productsData = [
   },
   {
     "title": "Uprooted",
+    "slug": "uprooted",
+    "isActive": true,
     "description": "A young woman is chosen by a wizard known as the Dragon to serve in his tower, but the real threat is the Wood.",
     "images": ["uprooted.jpg"],
     "stock": 18,
@@ -508,6 +564,8 @@ export const productsData = [
   },
   {
     "title": "Daughter of the Moon Goddess",
+    "slug": "daughter-of-the-moon-goddess",
+    "isActive": true,
     "description": "A young woman's quest to free her mother leads her into a world of immortals and ancient Chinese legends.",
     "images": ["daughter-of-the-moon-goddess.jpg"],
     "stock": 22,
@@ -526,6 +584,8 @@ export const productsData = [
   },
   {
     "title": "Jonathan Strange & Mr Norrell",
+    "slug": "jonathan-strange-and-mr-norrell",
+    "isActive": true,
     "description": "In 19th-century England, two very different magicians emerge to bring magic back to the world.",
     "images": ["jonathan-strange-mr-norrell.jpg"],
     "stock": 10,
@@ -544,6 +604,8 @@ export const productsData = [
   },
   {
     "title": "Neverwhere",
+    "slug": "neverwhere",
+    "isActive": true,
     "description": "An ordinary man falls through the cracks of reality into London Below, a world of monsters and saints.",
     "images": ["neverwhere.jpg"],
     "stock": 35,
@@ -562,6 +624,8 @@ export const productsData = [
   },
   {
     "title": "Prince of Thorns",
+    "slug": "prince-of-thorns",
+    "isActive": true,
     "description": "Jorg Ancrath, a young prince leading a band of bloodthirsty thugs, seeks revenge in a broken world.",
     "images": ["prince-of-thorns.jpg"],
     "stock": 14,
@@ -580,6 +644,8 @@ export const productsData = [
   },
   {
     "title": "Red Sister",
+    "slug": "red-sister",
+    "isActive": true,
     "description": "At the Convent of Sweet Mercy, young girls are trained to be killers under the dying sun of a frozen world.",
     "images": ["red-sister.jpg"],
     "stock": 20,
