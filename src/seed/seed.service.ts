@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, In } from 'typeorm';
+import { Repository, In, DeepPartial } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductService } from '../product/product.service';
 import { initialData, SeedCategory } from './data/seed-data';
@@ -13,6 +13,12 @@ import { ValidRoles } from '../user/enums/valid-roles';
 import { S3Service } from 'src/s3/s3.service';
 import { join } from 'path';
 import { ProductType } from 'src/product-type/entities/product-types.entity';
+import { Address } from 'src/address/entities/address.entity';
+import { AddressService } from '../address/address.service';
+import { CartService } from '../cart/cart.service';
+import { OrderService } from '../order/order.service';
+import { ShippingService } from '../shipping/shipping.service';
+import { TaxService } from '../tax/tax.service';
 
 @Injectable()
 export class SeedService {
@@ -23,6 +29,11 @@ export class SeedService {
     private readonly productService: ProductService,
     private readonly categoryService: CategoryService,
     private readonly productTypeService: ProductTypeService,
+    private readonly addressService: AddressService,
+    private readonly cartService: CartService,
+    private readonly orderService: OrderService,
+    private readonly shippingService: ShippingService,
+    private readonly taxService: TaxService,
     private readonly s3Service: S3Service,
 
     @InjectRepository( Role )
@@ -34,6 +45,9 @@ export class SeedService {
     @InjectRepository( Product )
     private readonly productRepository: Repository<Product>,
 
+    @InjectRepository( Address )
+    private readonly addressRepository: Repository<Address>,
+
     @InjectRepository( Category )
     private readonly categoryRepository: Repository<Category>
   ) {}
@@ -44,6 +58,8 @@ export class SeedService {
     await this.s3Service.emptyBucket();
 
     await this.insertRoles();
+    await this.insertShippingMethods();
+    await this.insertTaxes();
     const adminUser = await this.insertUsers();
 
     await this.insertBookType();
@@ -55,9 +71,14 @@ export class SeedService {
 
   private async deleteTables() {
 
+    await this.orderService.deleteAllOrders();
+    await this.addressService.deleteAllAddresses();
+    await this.cartService.deleteAllCarts();
+    await this.shippingService.deleteAllShippingMethods();
+    await this.taxService.deleteAllTaxes();
     await this.productService.deleteAllProducts();
-    await this.productTypeService.deleteAllProductTypes();
     await this.categoryService.deleteAllCategories();
+    await this.productTypeService.deleteAllProductTypes();
 
     const queryBuilder = this.userRepository.createQueryBuilder();
     await queryBuilder
@@ -77,6 +98,22 @@ export class SeedService {
     return this.rolesRepository.save(roles);
   }
 
+  private async insertShippingMethods(): Promise<void> {
+    const shippingMethods = initialData.shippingMethods;
+
+    for (const shippingMethodData of shippingMethods) {
+      await this.shippingService.create(shippingMethodData);
+    }
+  }
+
+  private async insertTaxes(): Promise<void> {
+    const taxes = initialData.taxes;
+
+    for (const taxData of taxes) {
+      await this.taxService.create(taxData);
+    }
+  }
+
   private async insertUsers() {
 
     const seedUsers = initialData.users;
@@ -88,7 +125,7 @@ export class SeedService {
     const dbRoles = await this.rolesRepository.find();
     dbRoles.forEach((role) => rolesMap.set(role.name, role));
 
-    seedUsers.forEach( ({roles ,...user}) => {
+    seedUsers.forEach( ({roles ,addresses, ...user}) => {
       const userRoles = roles
         .map((name) => rolesMap.get(name as ValidRoles))
         .filter((role): role is Role => !!role);
@@ -97,6 +134,19 @@ export class SeedService {
     });
 
     const dbUsers = await this.userRepository.save( users )
+
+    for (let index = 0; index < dbUsers.length; index++) {
+      const seedUser = seedUsers[index];
+      const dbUser = dbUsers[index];
+
+      if (seedUser.addresses?.length) {
+        const addressesToSave: DeepPartial<Address>[] = seedUser.addresses.map((address) => ({
+          ...address,
+          user: dbUser,
+        }));
+        await this.addressRepository.save(addressesToSave);
+      }
+    }
 
     return dbUsers[0];
   }
