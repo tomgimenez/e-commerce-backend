@@ -8,10 +8,12 @@ interface SeedProduct {
 	description: string;
 	stock: number;
 	price: number;
+	slug?: string;
 	images: string[];
 	tags: string[];
 	rating: number;
 	reviews: number;
+	isActive?: boolean;
 	attributes: Record<string, any>;
 	categories?: SeedCategory[];
 }
@@ -22,6 +24,7 @@ interface SeedUser {
 	lastname: string;
 	password: string;
 	roles:     string[];
+	addresses?: any[];
 }
 
 interface SeedProductType {
@@ -30,11 +33,28 @@ interface SeedProductType {
 	schema: Record<string, any>;
 }
 
+interface SeedShippingMethod {
+	name: string;
+	description: string;
+	price: number;
+	is_active?: boolean;
+	sort_order: number;
+}
+
+interface SeedTax {
+	name: string;
+	rate: number;
+	is_active?: boolean;
+	sort_order: number;
+}
+
 interface SeedData {
 	users: SeedUser[];
 	categories: SeedCategory[];
 	productType: SeedProductType;
 	products: SeedProduct[];
+	shippingMethods: SeedShippingMethod[];
+	taxes: SeedTax[];
 }
 
 export interface SeedCategory {
@@ -91,7 +111,23 @@ export const initialData: SeedData = {
 			name: 'Admin User',
 			lastname: 'User',
 			password: bcrypt.hashSync( 'Abc123', 10 ),
-			roles: [ValidRoles.admin]
+			roles: [ValidRoles.admin],
+			addresses: [
+				{
+					name: 'Admin Headquarters',
+					street: 'Av. Siempre Viva',
+					number: '742',
+					floor: '1',
+					apartment: 'A',
+					between_streets: 'Falsa 2 y Falsa 4',
+					notes: 'Dirección administrativa para el usuario admin',
+					city: 'Springfield',
+					state: 'Buenos Aires',
+					zip_code: '5000',
+					country: 'Argentina',
+					is_default: true,
+				}
+			]
 		},
 		{
 			email: 'user@google.com',
@@ -131,5 +167,38 @@ export const initialData: SeedData = {
 		},
 	},
 
-	products: productsData
+	products: productsData,
+
+	shippingMethods: [
+		{
+			name: 'Free Shipping',
+			description: '7-10 business days gratis',
+			price: 0,
+			is_active: true,
+			sort_order: 1,
+		},
+		{
+			name: 'Standard Shipping',
+			description: '3/5 business days',
+			price: 4.99,
+			is_active: true,
+			sort_order: 2,
+		},
+		{
+			name: 'Express Shipping',
+			description: '1-2 business days',
+			price: 9.99,
+			is_active: true,
+			sort_order: 3,
+		},
+	],
+
+	taxes: [
+		{
+			name: 'IVA',
+			rate: 0.21,
+			is_active: true,
+			sort_order: 1,
+		},
+	],
 }
