@@ -190,4 +190,12 @@ export class OrderService {
       relations: ['items', 'items.product', 'shipping_address'],
     });
   }
+
+  async deleteAllOrders() {
+    await this.orderRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Order)
+      .execute();
+  }
 }

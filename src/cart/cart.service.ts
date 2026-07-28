@@ -101,4 +101,12 @@ export class CartService {
 
     return true;
   }
+
+  async deleteAllCarts() {
+    await this.cartRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Cart)
+      .execute();
+  }
 }

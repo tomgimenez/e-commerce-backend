@@ -52,4 +52,12 @@ export class AddressService {
       user: { id: user.id }
     });
   }
+
+  async deleteAllAddresses() {
+    await this.addressRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Address)
+      .execute();
+  }
 }

@@ -9,6 +9,7 @@ import { Tax } from './entities/tax.entity';
   providers: [TaxService],
   imports: [
     TypeOrmModule.forFeature([ Tax ])
-  ]
+  ],
+  exports: [TaxService]
 })
 export class TaxModule {}

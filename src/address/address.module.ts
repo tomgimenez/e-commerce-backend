@@ -10,6 +10,7 @@ import { AddressController } from './address.controller';
   imports: [
     TypeOrmModule.forFeature([ Address ])
   ],
-  controllers: [AddressController]
+  controllers: [AddressController],
+  exports: [TypeOrmModule, AddressService]
 })
 export class AddressModule {}

@@ -34,4 +34,12 @@ export class TaxService {
   async remove(id: number): Promise<void> {
     await this.taxRepository.delete(id);
   }
+
+  async deleteAllTaxes() {
+    await this.taxRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Tax)
+      .execute();
+  }
 }

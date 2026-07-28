@@ -12,6 +12,7 @@ import { S3Module } from '../s3/s3.module';
   imports: [
     TypeOrmModule.forFeature([Cart, CartItem]),
     S3Module
-  ]
+  ],
+  exports: [CartService]
 })
 export class CartModule {}

@@ -34,4 +34,12 @@ export class ShippingService {
   async remove(id: number): Promise<void> {
     await this.shippingRepository.delete(id);
   }
+
+  async deleteAllShippingMethods() {
+    await this.shippingRepository
+      .createQueryBuilder()
+      .delete()
+      .from(ShippingMethod)
+      .execute();
+  }
 }

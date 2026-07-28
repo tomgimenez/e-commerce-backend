@@ -18,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     TypeOrmModule.forFeature([ Order, OrderItem, Cart, Address, ShippingMethod, Tax ]),
     ConfigModule
-  ]
+  ],
+  exports: [OrderService]
 })
 export class OrderModule {}
