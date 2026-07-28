@@ -13,6 +13,11 @@ import { ProductTypesModule } from 'src/product-type/product-type.module';
 import { Role } from 'src/user/entities/role.entity';
 import { S3Module } from 'src/s3/s3.module';
 import { UserModule } from 'src/user/user.module';
+import { AddressModule } from 'src/address/address.module';
+import { CartModule } from 'src/cart/cart.module';
+import { OrderModule } from 'src/order/order.module';
+import { ShippingModule } from 'src/shipping/shipping.module';
+import { TaxModule } from 'src/tax/tax.module';
 
 @Module({
   controllers: [SeedController],
@@ -24,7 +29,12 @@ import { UserModule } from 'src/user/user.module';
     AuthModule,
     CategoryModule,
     ProductTypesModule,
-    S3Module
+    S3Module,
+    AddressModule,
+    CartModule,
+    OrderModule,
+    ShippingModule,
+    TaxModule
   ]
 })
 export class SeedModule {}
