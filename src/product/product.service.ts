@@ -149,6 +149,38 @@ export class ProductService {
     };
   }
 
+  async findByAttribute(attributeName: string, attributeValue?: string) {
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+
+    queryBuilder
+      .leftJoinAndSelect('product.images', 'productImages')
+      .leftJoinAndSelect('product.categories', 'categories')
+      .leftJoinAndSelect('product.productType', 'productType')
+      .orderBy('product.id', 'ASC')
+      .take(8);
+
+    if (attributeValue !== undefined) {
+      queryBuilder.andWhere(
+        `product.attributes ->> :attributeName = :attributeValue`,
+        { attributeName, attributeValue },
+      );
+    } else {
+      queryBuilder.andWhere(
+        `product.attributes ->> :attributeName IS NOT NULL`,
+        { attributeName },
+      );
+    }
+
+    const products = await queryBuilder.getMany();
+
+    return products.map((product) => ({
+      ...product,
+      images: product.images.map(
+        (img) => ({ ...img, key: img.url, url: this.s3Service.buildUrl(img.url) }),
+      ),
+    }));
+  }
+
   async findOne(term: string) {
     let product: Product;
 

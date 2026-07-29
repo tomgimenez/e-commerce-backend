@@ -45,6 +45,14 @@ export class ProductController {
     return this.productService.findAll(paginationDto);
   }
 
+  @Get('attribute/:attributeName')
+  findByAttribute(
+    @Param('attributeName') attributeName: string,
+    @Query('value') attributeValue?: string,
+  ) {
+    return this.productService.findByAttribute(attributeName, attributeValue);
+  }
+
   @Get(':term')
   findOne(@Param('term') term: string) {
     return this.productService.findOnePlain(term);

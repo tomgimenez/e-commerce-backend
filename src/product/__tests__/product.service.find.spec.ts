@@ -123,6 +123,23 @@ import { NotFoundException } from "@nestjs/common";
       expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
     });
 
+    it('should return products filtered by a dynamic attribute and optional value', async () => {
+      const mockProducts = [
+        { id: '1', title: 'Best Seller 1', images: [], categories: [], productType: null },
+      ];
+
+      mockQueryBuilder.getMany.mockResolvedValue(mockProducts);
+
+      const result = await service.findByAttribute('isBesteller', 'true');
+
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        "product.attributes ->> :attributeName = :attributeValue",
+        { attributeName: 'isBesteller', attributeValue: 'true' }
+      );
+      expect(mockQueryBuilder.take).toHaveBeenCalledWith(8);
+      expect(result).toEqual(mockProducts);
+    });
+
     describe('findOne', () => {
       let mockQueryBuilder: any;
   
