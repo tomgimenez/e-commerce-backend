@@ -2,7 +2,6 @@ import {
   BadRequestException,
   HttpException,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,7 +18,6 @@ import { PaginationDto } from '../common/dtos/pagination.dto';
 
 import { ProductImage, Product } from './entities';
 import { User } from '../user/entities/user.entity';
-import { Category } from '../category/entities/category.entity';
 import { ProductTypeService } from '../product-type/product-type.service';
 import { S3Service } from '../s3/s3.service';
 
