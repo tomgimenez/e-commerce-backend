@@ -2,7 +2,6 @@ import {
   BadRequestException,
   HttpException,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,7 +18,6 @@ import { PaginationDto } from '../common/dtos/pagination.dto';
 
 import { ProductImage, Product } from './entities';
 import { User } from '../user/entities/user.entity';
-import { Category } from '../category/entities/category.entity';
 import { ProductTypeService } from '../product-type/product-type.service';
 import { S3Service } from '../s3/s3.service';
 
@@ -147,6 +145,38 @@ export class ProductService {
         ),
       })),
     };
+  }
+
+  async findByAttribute(attributeName: string, attributeValue?: string) {
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+
+    queryBuilder
+      .leftJoinAndSelect('product.images', 'productImages')
+      .leftJoinAndSelect('product.categories', 'categories')
+      .leftJoinAndSelect('product.productType', 'productType')
+      .orderBy('product.id', 'ASC')
+      .take(8);
+
+    if (attributeValue !== undefined) {
+      queryBuilder.andWhere(
+        `product.attributes ->> :attributeName = :attributeValue`,
+        { attributeName, attributeValue },
+      );
+    } else {
+      queryBuilder.andWhere(
+        `product.attributes ->> :attributeName IS NOT NULL`,
+        { attributeName },
+      );
+    }
+
+    const products = await queryBuilder.getMany();
+
+    return products.map((product) => ({
+      ...product,
+      images: product.images.map(
+        (img) => ({ ...img, key: img.url, url: this.s3Service.buildUrl(img.url) }),
+      ),
+    }));
   }
 
   async findOne(term: string) {
