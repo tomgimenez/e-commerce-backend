@@ -80,38 +80,38 @@ export class S3Service {
   }
 
   async emptyBucket(): Promise<void> {
-  let continuationToken: string | undefined;
+    let continuationToken: string | undefined;
 
-  do {
-    // Listar hasta 1000 objetos por vez (límite de S3)
-    const listResponse = await this.client.send(
-      new ListObjectsV2Command({
-        Bucket: this.bucket,
-        ContinuationToken: continuationToken,
-      }),
-    );
-
-    const objects = listResponse.Contents;
-
-    if (objects && objects.length > 0) {
-      // Borrar todos los del lote en una sola llamada
-      await this.client.send(
-        new DeleteObjectsCommand({
+    do {
+      // Listar hasta 1000 objetos por vez (límite de S3)
+      const listResponse = await this.client.send(
+        new ListObjectsV2Command({
           Bucket: this.bucket,
-          Delete: {
-            Objects: objects.map((obj) => ({ Key: obj.Key! })),
-            Quiet: true, // no devuelve detalle de cada objeto borrado
-          },
+          ContinuationToken: continuationToken,
         }),
       );
-    }
 
-    continuationToken = listResponse.IsTruncated
-      ? listResponse.NextContinuationToken
-      : undefined;
+      const objects = listResponse.Contents;
 
-  } while (continuationToken); // si hay más de 1000 objetos, sigue paginando
-}
+      if (objects && objects.length > 0) {
+        // Borrar todos los del lote en una sola llamada
+        await this.client.send(
+          new DeleteObjectsCommand({
+            Bucket: this.bucket,
+            Delete: {
+              Objects: objects.map((obj) => ({ Key: obj.Key! })),
+              Quiet: true, // no devuelve detalle de cada objeto borrado
+            },
+          }),
+        );
+      }
+
+      continuationToken = listResponse.IsTruncated
+        ? listResponse.NextContinuationToken
+        : undefined;
+
+    } while (continuationToken); // si hay más de 1000 objetos, sigue paginando
+  }
 
   buildUrl(key: string): string {
     return `https://${this.bucket}.s3.${this.configService.get('AWS_REGION')}.amazonaws.com/${key}`;
