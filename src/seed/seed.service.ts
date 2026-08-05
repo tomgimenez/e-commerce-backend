@@ -55,7 +55,7 @@ export class SeedService {
   async runSeed() {
 
     await this.deleteTables();
-    await this.s3Service.emptyBucket();
+    // await this.s3Service.emptyBucket();
 
     await this.insertRoles();
     await this.insertShippingMethods();
@@ -210,23 +210,28 @@ export class SeedService {
   private async createProductWithCategories( productData: any, user: User ) {
     try {
 
-      const { categories: seedCategories, images, ...productDetails } = productData;
+      /* const { categories: seedCategories, images, ...productDetails } = productData;
       let imagesFromS3 = [];
-
+      
       // Save product images in AWS S3 bucket
       for (const image of images) {
         const imagePath = join(process.cwd(), 'static', 'seed', image);
         const imageName = await this.s3Service.uploadFromPath(imagePath);
         imagesFromS3.push(imageName);
       }
-
+        
       const productResult = {
         ...productDetails,
         images: imagesFromS3
       }
+        
+      // Create product without categories
+      const createdProduct = await this.productService.create( productResult, user ); */
+          
+      const { categories: seedCategories, ...productDetails } = productData;
       
       // Create product without categories
-      const createdProduct = await this.productService.create( productResult, user );
+      const createdProduct = await this.productService.create( productDetails, user );
       
       // If there are categories in the seed data, associate them
       if (seedCategories && seedCategories.length > 0) {

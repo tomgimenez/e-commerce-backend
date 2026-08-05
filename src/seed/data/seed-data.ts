@@ -172,14 +172,14 @@ export const initialData: SeedData = {
 	shippingMethods: [
 		{
 			name: 'Free Shipping',
-			description: '7-10 business days gratis',
+			description: '7-10 business days',
 			price: 0,
 			is_active: true,
 			sort_order: 1,
 		},
 		{
 			name: 'Standard Shipping',
-			description: '3/5 business days',
+			description: '3-5 business days',
 			price: 4.99,
 			is_active: true,
 			sort_order: 2,
