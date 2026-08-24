@@ -19,7 +19,6 @@ import { PaginationDto } from '../common/dtos/pagination.dto';
 import { ProductImage, Product } from './entities';
 import { User } from '../user/entities/user.entity';
 import { ProductTypeService } from '../product-type/product-type.service';
-import { S3Service } from '../s3/s3.service';
 
 @Injectable()
 export class ProductService {
@@ -33,7 +32,6 @@ export class ProductService {
     private readonly productImageRepository: Repository<ProductImage>,
 
     private readonly productTypeService: ProductTypeService,
-    private readonly s3Service: S3Service,
 
     private readonly dataSource: DataSource,
   ) {}
@@ -141,7 +139,7 @@ export class ProductService {
       products: products.map((product) => ({
         ...product,
         images: product.images.map(
-          (img) => ({...img, key: img.url, url: this.s3Service.buildUrl(img.url)})
+          (img) => ({...img, key: img.url, url: img.url})
         ),
       })),
     };
@@ -174,7 +172,7 @@ export class ProductService {
     return products.map((product) => ({
       ...product,
       images: product.images.map(
-        (img) => ({ ...img, key: img.url, url: this.s3Service.buildUrl(img.url) }),
+        (img) => ({ ...img, key: img.url, url: img.url }),
       ),
     }));
   }
@@ -206,7 +204,7 @@ export class ProductService {
     return {
       ...product,
       images: images.map(
-        img => ({...img, key: img.url, url: this.s3Service.buildUrl(img.url)})
+        img => ({...img, key: img.url, url: img.url})
       )
     }
   }
@@ -226,18 +224,6 @@ export class ProductService {
 
     try {
       if (images) {
-
-        const currentImages = await this.productImageRepository.find({
-          where: { product: { id } }
-        });
-
-        const imagesToDelete = currentImages.filter(
-          img => !images.includes(img.url)
-        );
-
-        await Promise.all(
-          imagesToDelete.map(img => this.s3Service.deleteByKey(img.url))
-        );
 
         await queryRunner.manager.delete(ProductImage, { product: { id } });
 
