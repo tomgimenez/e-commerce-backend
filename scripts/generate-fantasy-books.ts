@@ -77,6 +77,10 @@ function randomStock(): number {
   return Math.floor(Math.random() * 150) + 10;
 }
 
+function randomBestseller(probability = 0.25): boolean {
+  return Math.random() < probability;
+}
+
 async function fetchPage(offset: number, limit: number): Promise<OpenLibraryDoc[]> {
   const fields = [
     'key', 'title', 'author_name', 'first_publish_year',
@@ -114,7 +118,7 @@ function toSeedProduct(doc: OpenLibraryDoc): SeedProduct | null {
       isbn: doc.isbn?.[0] ?? null,
       language: doc.language?.[0] ?? 'eng',
       publishYear: doc.first_publish_year ?? null,
-      isBestseller: false,
+      isBestseller: randomBestseller(),
     },
     categories,
   };
