@@ -40,7 +40,7 @@ export class CartService {
           images: item.product.images.map(img => ({
             ...img,
             key: img.url,
-            url: this.s3Service.buildUrl(img.url),
+            url: img.url,
           })),
         },
       })),

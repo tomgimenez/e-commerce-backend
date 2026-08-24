@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { ValidRoles } from '../../user/enums/valid-roles';
-import { productsData } from './products-data';
 import { ProductType } from 'src/product-type/entities/product-types.entity';
+import { openLibraryFantasyBooks } from './openlibrary-fantasy.data'
 
 interface SeedProduct {
 	title: string;
@@ -167,7 +167,7 @@ export const initialData: SeedData = {
 		},
 	},
 
-	products: productsData,
+	products: openLibraryFantasyBooks,
 
 	shippingMethods: [
 		{

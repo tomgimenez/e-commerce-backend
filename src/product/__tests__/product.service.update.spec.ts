@@ -2,7 +2,6 @@ import { DataSource, Repository } from "typeorm";
 import { ProductService } from "../product.service";
 import { createProductServiceTestingModule } from "./product.service.spec-setup";
 import { Product, ProductImage } from "../entities";
-import { S3Service } from "src/s3/s3.service";
 import { User } from "src/user/entities/user.entity";
 import { NotFoundException } from "@nestjs/common";
 
@@ -11,7 +10,6 @@ import { NotFoundException } from "@nestjs/common";
     let service: ProductService;
     let productRepo: jest.Mocked<Repository<Product>>;
     let imageRepo: jest.Mocked<Repository<ProductImage>>;
-    let s3Service: jest.Mocked<S3Service>;
     let dataSource: jest.Mocked<DataSource>;
     let mockedUser: User;
     let mockQueryRunner: any;
@@ -19,7 +17,7 @@ import { NotFoundException } from "@nestjs/common";
 
     beforeEach(async () => {
 
-      ({ service, productRepo, imageRepo, s3Service, dataSource, mockedUser } 
+      ({ service, productRepo, imageRepo, dataSource, mockedUser } 
         = await createProductServiceTestingModule());
       mockQueryRunner = {
         connect: jest.fn(),
@@ -71,14 +69,10 @@ import { NotFoundException } from "@nestjs/common";
       productRepo.preload = jest.fn().mockResolvedValue(mockProduct);
       imageRepo.find = jest.fn().mockResolvedValue(currentImages);
       imageRepo.create = jest.fn().mockImplementation((dto) => dto as ProductImage);
-      s3Service.deleteByKey = jest.fn().mockResolvedValue(undefined);
       jest.spyOn(service, 'findOnePlain').mockResolvedValue(mockProduct as any);
 
       await service.update(validUUID, { images: ['keep-image.jpg', 'new-image.jpg'] }, mockedUser);
 
-      // should delete only the image not present in the new list
-      expect(s3Service.deleteByKey).toHaveBeenCalledTimes(1);
-      expect(s3Service.deleteByKey).toHaveBeenCalledWith('old-image.jpg');
 
       expect(mockQueryRunner.manager.delete).toHaveBeenCalledWith(ProductImage, { product: { id: validUUID } });
 
@@ -99,20 +93,5 @@ import { NotFoundException } from "@nestjs/common";
       expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
       expect(mockQueryRunner.release).toHaveBeenCalled();
       expect((service as any).handleDBExceptions).toHaveBeenCalledWith(mockError);
-    });
-
-    it('should not call s3Service.deleteByKey if all current images are kept', async () => {
-      const mockProduct = { id: validUUID, images: [] } as Product;
-      const currentImages = [{ id: 'img1', url: 'keep.jpg' }] as unknown as ProductImage[];
-
-      productRepo.preload = jest.fn().mockResolvedValue(mockProduct);
-      imageRepo.find = jest.fn().mockResolvedValue(currentImages);
-      imageRepo.create = jest.fn().mockImplementation((dto) => dto as ProductImage);
-      s3Service.deleteByKey = jest.fn();
-      jest.spyOn(service, 'findOnePlain').mockResolvedValue(mockProduct as any);
-
-      await service.update(validUUID, { images: ['keep.jpg'] }, mockedUser);
-
-      expect(s3Service.deleteByKey).not.toHaveBeenCalled();
     });
   });

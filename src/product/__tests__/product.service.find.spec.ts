@@ -35,7 +35,6 @@ import { NotFoundException } from "@nestjs/common";
 
       mockQueryBuilder.getMany.mockResolvedValue(mockProducts);
       mockQueryBuilder.getCount.mockResolvedValue(2);
-      s3Service.buildUrl.mockReturnValue('https://bucket.s3.amazonaws.com/img1.jpg');
 
       const result = await service.findAll({});
 
@@ -46,7 +45,7 @@ import { NotFoundException } from "@nestjs/common";
           {
             id: '1',
             title: 'Product 1',
-            images: [{ url: 'https://bucket.s3.amazonaws.com/img1.jpg', key: 'img1.jpg' }],
+            images: [{ url: 'img1.jpg', key: 'img1.jpg' }],
             categories: [],
             productType: null,
           },

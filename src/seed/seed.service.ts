@@ -10,8 +10,6 @@ import { Category } from 'src/category/entities/category.entity';
 import { ProductTypeService } from 'src/product-type/product-type.service';
 import { Role } from 'src/user/entities/role.entity';
 import { ValidRoles } from '../user/enums/valid-roles';
-import { S3Service } from 'src/s3/s3.service';
-import { join } from 'path';
 import { ProductType } from 'src/product-type/entities/product-types.entity';
 import { Address } from 'src/address/entities/address.entity';
 import { AddressService } from '../address/address.service';
@@ -34,7 +32,6 @@ export class SeedService {
     private readonly orderService: OrderService,
     private readonly shippingService: ShippingService,
     private readonly taxService: TaxService,
-    private readonly s3Service: S3Service,
 
     @InjectRepository( Role )
     private readonly rolesRepository: Repository<Role>,
@@ -53,9 +50,7 @@ export class SeedService {
   ) {}
 
   async runSeed() {
-
     await this.deleteTables();
-    // await this.s3Service.emptyBucket();
 
     await this.insertRoles();
     await this.insertShippingMethods();
